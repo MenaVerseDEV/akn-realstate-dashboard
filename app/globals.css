@@ -1,26 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #5c82a6;
+  --color-primary-dark: #2c4153;
+  --color-primary-light: #8eb0cc;
+  --color-secondary: #6b7f8e;
+  --color-accent: #5c82a6;
+  --color-accent-light: #8eb0cc;
+  --color-bg: #f8f9fb;
+  --color-bg-dark: #eef1f5;
+  --color-bg-card: #ffffff;
+  --color-surface: #ffffff;
+  --color-primary-text: #1a2b3c;
+  --color-dark: #1a2b3c;
+  --color-muted: #6b7f8e;
+  --color-light: #7d8e9e;
+  --color-border: #dce3ea;
+  --color-border-strong: #a3b4c4;
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-muted-sh: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent-sh: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-full: 9999px;
+  --radius-sh: 0px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 216 20% 97%;
+    --foreground: 210 38% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 38% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 38% 17%;
+    --primary: 209 30% 51%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 207 41% 68%;
+    --secondary-foreground: 210 38% 17%;
+    --muted: 210 12% 49%;
+    --muted-foreground: 210 12% 49%;
+    --accent: 209 30% 51%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 18% 90%;
+    --input: 210 18% 90%;
+    --ring: 209 30% 51%;
+    --radius: 0px;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: "Cairo", sans-serif;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-dark);
+    direction: rtl;
+  }
+
+  input[dir="ltr"],
+  textarea[dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+  }
+
+  input[dir="rtl"],
+  textarea[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid #dce3ea;
+    box-shadow: 0 4px 30px -5px rgba(0, 0, 0, 0.08);
+  }
 }
