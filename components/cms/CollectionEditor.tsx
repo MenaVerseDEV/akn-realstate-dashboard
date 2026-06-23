@@ -127,11 +127,16 @@ export function CollectionEditor<T extends { id: string }>({
       )}
 
       <Sheet open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
-        <SheetContent side="left" className="w-full overflow-y-auto sm:max-w-lg">
-          <SheetHeader>
-            <SheetTitle>{editing === "new" ? addLabel ?? "إضافة" : "تعديل"}</SheetTitle>
+        <SheetContent
+          side="left"
+          className="flex h-full w-full flex-col gap-0 overflow-hidden rounded-none border-border bg-bg-card p-0 sm:max-w-xl"
+        >
+          <SheetHeader className="shrink-0 border-b border-border px-6 py-4">
+            <SheetTitle className="pe-10 text-lg font-bold text-dark">
+              {editing === "new" ? addLabel ?? "إضافة" : "تعديل"}
+            </SheetTitle>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
             {editing !== null &&
               renderForm(editing === "new" ? null : editing, () => setEditing(null))}
           </div>

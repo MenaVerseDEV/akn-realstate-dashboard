@@ -19,7 +19,7 @@ export function StickySaveBar({ dirty, saving, onSave, onCancel }: StickySaveBar
         "fixed bottom-0 left-0 right-64 z-50 flex items-center justify-between border-t border-border bg-bg-card px-6 py-4 shadow-lg",
       )}
     >
-      <p className="text-sm text-muted">لديك تغييرات غير محفوظة</p>
+      <p className="text-sm text-muted-foreground">لديك تغييرات غير محفوظة</p>
       <div className="flex gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={saving}>

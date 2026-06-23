@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { PageLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 import { ReorderableList } from "@/components/cms/ReorderableList";
 import { MediaPicker } from "@/components/cms/MediaPicker";
 import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
@@ -23,7 +23,7 @@ export default function ProjectDetailPage() {
   const [deleting, setDeleting] = useState<ProjectMedia | null>(null);
   const [newMediaUrl, setNewMediaUrl] = useState<string | null>(null);
 
-  if (isLoading) return <Skeleton className="h-64 w-full" />;
+  if (isLoading) return <PageLoadingSkeleton />;
   if (!project) return <p>المشروع غير موجود</p>;
 
   const handleAddMedia = async () => {
@@ -49,7 +49,7 @@ export default function ProjectDetailPage() {
         </Button>
         <div>
           <h2 className="text-2xl font-bold text-dark">{project.name.ar}</h2>
-          <p className="text-sm text-muted">معرّف: {project.slug}</p>
+          <p className="text-sm text-muted-foreground">معرّف: {project.slug}</p>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export default function ProjectDetailPage() {
         </div>
 
         {project.media.length === 0 ? (
-          <p className="text-muted">لا توجد وسائط بعد</p>
+          <p className="text-muted-foreground">لا توجد وسائط بعد</p>
         ) : (
           <ReorderableList
             items={project.media}
@@ -77,7 +77,7 @@ export default function ProjectDetailPage() {
                 <div className="relative size-16 overflow-hidden border border-border">
                   <Image src={media.url} alt="" fill className="object-cover" unoptimized />
                 </div>
-                <span className="text-sm text-muted">{media.type}</span>
+                <span className="text-sm text-muted-foreground">{media.type}</span>
                 <Button
                   type="button"
                   variant="ghost"

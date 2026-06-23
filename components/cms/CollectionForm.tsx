@@ -51,9 +51,12 @@ export function CollectionForm<T extends Record<string, unknown>>({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        {children(form)}
-        <div className="flex gap-2 pt-4">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex min-h-full flex-col"
+      >
+        <div className="flex-1 space-y-5">{children(form)}</div>
+        <div className="sticky bottom-0 -mx-6 mt-6 flex gap-2 border-t border-border bg-bg-card px-6 py-4">
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? "جاري الحفظ..." : "حفظ"}
           </Button>

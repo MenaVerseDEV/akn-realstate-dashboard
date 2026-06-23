@@ -14,7 +14,7 @@ import {
 import { useMedia } from "@/lib/hooks/use-cms";
 import { api } from "@/lib/hooks/use-cms";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { GridLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 
 type MediaPickerProps = {
   value: string | null;
@@ -74,11 +74,7 @@ export function MediaPicker({ value, onChange, label = "اختر وسائط" }: 
             )}
           </div>
           {isLoading ? (
-            <div className="grid grid-cols-4 gap-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="aspect-square" />
-              ))}
-            </div>
+            <GridLoadingSkeleton count={4} />
           ) : (
             <div className="grid max-h-80 grid-cols-4 gap-2 overflow-y-auto">
               {data?.data.map((asset) => (

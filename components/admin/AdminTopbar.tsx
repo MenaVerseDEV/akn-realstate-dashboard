@@ -29,7 +29,7 @@ export function AdminTopbar() {
         <h1 className="text-lg font-bold text-dark">
           {settings?.siteName.ar ?? "أكن العقارية"}
         </h1>
-        <p className="text-xs text-muted">إدارة محتوى الموقع</p>
+        <p className="text-xs text-muted-foreground">إدارة محتوى الموقع</p>
       </div>
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" asChild>

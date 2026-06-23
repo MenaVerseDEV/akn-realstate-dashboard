@@ -52,7 +52,7 @@ function SortableRow<T extends ReorderableItem>({
     >
       <button
         type="button"
-        className="cursor-grab text-muted hover:text-dark"
+        className="cursor-grab text-muted-foreground hover:text-dark"
         {...attributes}
         {...listeners}
       >

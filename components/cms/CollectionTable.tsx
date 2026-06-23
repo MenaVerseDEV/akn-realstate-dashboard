@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TableLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 
 type Column<T> = {
   key: string;
@@ -40,7 +40,7 @@ export function CollectionTable<T extends { id: string }>({
   addLabel = "إضافة",
 }: CollectionTableProps<T>) {
   if (isLoading) {
-    return <Skeleton className="h-64 w-full" />;
+    return <TableLoadingSkeleton />;
   }
 
   return (
@@ -54,7 +54,7 @@ export function CollectionTable<T extends { id: string }>({
         </div>
       )}
       {items.length === 0 ? (
-        <div className="flex h-48 items-center justify-center border border-dashed border-border text-muted">
+        <div className="flex h-48 items-center justify-center border border-dashed border-border bg-muted/30 text-muted-foreground">
           {emptyMessage}
         </div>
       ) : (

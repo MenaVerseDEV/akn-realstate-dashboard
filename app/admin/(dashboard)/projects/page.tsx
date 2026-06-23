@@ -130,13 +130,24 @@ export default function ProjectsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between rounded-none border border-border bg-bg p-4">
+                <Label htmlFor="project-published" className="font-medium">
+                  منشور على الموقع
+                </Label>
                 <Switch
+                  id="project-published"
                   checked={form.watch("published")}
                   onCheckedChange={(v) => form.setValue("published", v)}
                 />
-                <Label>منشور على الموقع</Label>
               </div>
+              {item ? (
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href={`/admin/projects/${item.id}`}>
+                    <Icon icon="solar:gallery-bold" width={16} />
+                    إدارة معرض الوسائط
+                  </Link>
+                </Button>
+              ) : null}
             </>
           )}
         </CollectionForm>

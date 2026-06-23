@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { GridLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 import {
   Select,
   SelectContent,
@@ -80,13 +80,9 @@ export default function MediaLibraryPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square" />
-          ))}
-        </div>
+        <GridLoadingSkeleton count={8} />
       ) : data?.data.length === 0 ? (
-        <div className="flex h-48 items-center justify-center border border-dashed border-border text-muted">
+        <div className="flex h-48 items-center justify-center border border-dashed border-border text-muted-foreground">
           لا توجد وسائط
         </div>
       ) : (
@@ -97,7 +93,7 @@ export default function MediaLibraryPage() {
                 <Image src={asset.url} alt="" fill className="object-cover" unoptimized />
               </div>
               <div className="space-y-2 p-3">
-                <p className="text-xs text-muted">{asset.type}</p>
+                <p className="text-xs text-muted-foreground">{asset.type}</p>
                 <Input
                   defaultValue={asset.altText?.ar ?? ""}
                   placeholder="نص بديل"

@@ -120,7 +120,7 @@ export default function HeroPage() {
               <div className="flex items-center gap-3">
                 <Icon icon={stat.icon} width={20} />
                 <span className="font-bold">{stat.value}{stat.suffix}</span>
-                <span className="text-sm text-muted">{stat.label.ar}</span>
+                <span className="text-sm text-muted-foreground">{stat.label.ar}</span>
               </div>
               <Button type="button" variant="ghost" size="icon-xs" onClick={() => setDeletingStat(stat)}>
                 <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />

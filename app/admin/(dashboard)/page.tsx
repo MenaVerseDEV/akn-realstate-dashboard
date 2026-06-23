@@ -10,7 +10,7 @@ export default function AdminOverviewPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-dark">مرحباً بك</h2>
-        <p className="text-muted">اختر قسماً لتحرير محتوى الموقع</p>
+        <p className="text-muted-foreground">اختر قسماً لتحرير محتوى الموقع</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -24,7 +24,7 @@ export default function AdminOverviewPage() {
                 <CardTitle className="text-base">{item.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted">تحرير المحتوى</p>
+                <p className="text-sm text-muted-foreground">تحرير المحتوى</p>
               </CardContent>
             </Card>
           </Link>

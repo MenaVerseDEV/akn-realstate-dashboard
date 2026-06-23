@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { StickySaveBar } from "./StickySaveBar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FormLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 
 type SingletonFormProps<T extends FieldValues> = {
   schema: z.ZodType<T>;
@@ -37,12 +37,7 @@ export function SingletonForm<T extends FieldValues>({
   }, [data, form]);
 
   if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-48 w-full" />
-        <Skeleton className="h-48 w-full" />
-      </div>
-    );
+    return <FormLoadingSkeleton />;
   }
 
   const handleSave = () => form.handleSubmit(onSubmit)();

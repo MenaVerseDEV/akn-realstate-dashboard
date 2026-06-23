@@ -17,14 +17,14 @@ export function AdminSidebar() {
         </div>
         <div>
           <p className="text-sm font-bold text-dark">أكن العقارية</p>
-          <p className="text-xs text-muted">لوحة التحكم</p>
+          <p className="text-xs text-muted-foreground">لوحة التحكم</p>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-4">
         {adminNavigation.map((group) => (
           <div key={group.label} className="mb-6">
-            <p className="mb-2 px-2 text-xs font-bold tracking-wide text-muted uppercase">
+            <p className="mb-2 px-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
               {group.label}
             </p>
             <ul className="space-y-1">
