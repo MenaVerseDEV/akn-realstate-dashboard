@@ -22,6 +22,8 @@ export {
   useUpdateFooterInfoMutation,
   useListFooterServicesQuery,
   useGetFooterServiceByIdQuery,
+  useListFooterSocialLinksQuery,
+  useGetFooterSocialLinkByIdQuery,
   useGetFooterQuery,
   useUpdateFooterMutation,
 } from "./footerApi";

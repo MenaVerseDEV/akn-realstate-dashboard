@@ -318,8 +318,15 @@ export const mockStore = {
     store.footer.updatedAt = touch();
     return store.footer.services;
   },
-  createSocialLink: (data: Omit<SocialLink, "id" | "order">) => {
-    const link: SocialLink = { ...data, id: store.newId(), order: store.footer.socials.length };
+  createSocialLink: (data: Omit<SocialLink, "id" | "order" | "createdAt" | "updatedAt">) => {
+    const now = touch();
+    const link: SocialLink = {
+      ...data,
+      id: store.newId(),
+      order: store.footer.socials.length,
+      createdAt: now,
+      updatedAt: now,
+    };
     store.footer.socials.push(link);
     store.footer.updatedAt = touch();
     return link;

@@ -206,7 +206,7 @@ email=info@example.com
 
 Field mapping: `websiteName→companyName`, `websiteDescription→description`, `logo→logoFile`.
 
-Dashboard proxy: `GET/PUT /api/footer/info`. Socials remain mock.
+Dashboard proxy: `GET/PUT /api/footer/info`.
 
 ### Footer services (real API, client + RTK)
 
@@ -246,6 +246,46 @@ Also: `POST /footer/services`, `DELETE /footer/services/:id`, `PUT /footer/servi
 Field mapping: `title` merged from dual `Accept-Language` fetches; `link` stored as-is. List `order` is derived from array index.
 
 RTK: `useFooterServices()` → `listFooterServices` tag `FooterServices`.
+
+### Footer social media links (real API, client + RTK)
+
+Production path: `/api/v1/footer/social-media-links` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+```http
+GET /api/v1/footer/social-media-links
+
+200 OK
+{
+  "success": true,
+  "data": [
+    {
+      "id": "uuid",
+      "platformName": "Facebook",
+      "icon": "facebook",
+      "link": "https://facebook.com/example",
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
+}
+```
+
+```http
+POST /api/v1/footer/social-media-links
+Content-Type: application/json
+
+{
+  "platformName": "Facebook",
+  "icon": "facebook",
+  "link": "https://facebook.com/example"
+}
+```
+
+Also: `GET/PATCH/DELETE /footer/social-media-links/:id`, `PUT /footer/social-media-links/reorder` with `{ ids: string[] }`.
+
+Field mapping: `platformName→platform`, `link→url`, `icon` slug → iconify display (`facebook` → `solar:facebook-bold`). List `order` derived from array index.
+
+RTK: `useFooterSocialLinks()` → tag `FooterSocialLinks`.
 
 ### Singleton sub-collections
 

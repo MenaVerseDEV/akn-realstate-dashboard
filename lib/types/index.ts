@@ -289,12 +289,36 @@ export type FooterInfoFormValues = {
   logoFile?: File | null;
 };
 
+export type SocialLinkApi = {
+  id: string;
+  platformName: string;
+  icon: string;
+  link: string;
+  order?: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SocialLinkInput = {
+  platformName: string;
+  icon: string;
+  link: string;
+};
+
+export type SocialLinkFormValues = {
+  platform: string;
+  url: string;
+  icon: string;
+};
+
 export type SocialLink = {
   id: string;
   platform: string;
   url: string;
   icon: string;
   order: number;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Footer = {

@@ -7,6 +7,7 @@ import {
   useGetFooterInfoQuery,
   useGetFooterQuery,
   useListFooterServicesQuery,
+  useListFooterSocialLinksQuery,
   useGetHeroQuery,
   useGetMediaQuery,
   useGetMilestonesQuery,
@@ -105,6 +106,10 @@ export function useFooter() {
 
 export function useFooterServices() {
   return useListFooterServicesQuery();
+}
+
+export function useFooterSocialLinks() {
+  return useListFooterSocialLinksQuery();
 }
 
 export function useFooterInfo() {

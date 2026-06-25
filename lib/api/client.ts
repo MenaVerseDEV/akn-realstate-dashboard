@@ -99,7 +99,7 @@ export interface ApiClient {
   updateFooterService(id: string, data: Partial<FooterService>): Promise<FooterService>;
   deleteFooterService(id: string): Promise<void>;
   reorderFooterServices(ids: string[]): Promise<FooterService[]>;
-  createSocialLink(data: Omit<SocialLink, "id" | "order">): Promise<SocialLink>;
+  createSocialLink(data: Omit<SocialLink, "id" | "order" | "createdAt" | "updatedAt">): Promise<SocialLink>;
   updateSocialLink(id: string, data: Partial<SocialLink>): Promise<SocialLink>;
   deleteSocialLink(id: string): Promise<void>;
   reorderSocialLinks(ids: string[]): Promise<SocialLink[]>;

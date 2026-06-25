@@ -1,32 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react";
+import { toDisplayIcon } from "@/lib/icons";
 import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { FormSection } from "@/components/cms/FormSection";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { LogoUploadField } from "@/components/cms/LogoUploadField";
 import { SingletonForm } from "@/components/cms/SingletonForm";
-import { ReorderableList } from "@/components/cms/ReorderableList";
-import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
-  api,
-  useFooter,
   useFooterInfo,
   useFooterServices,
+  useFooterSocialLinks,
   useUpdateFooterInfo,
 } from "@/lib/hooks/use-cms";
 import * as footerServicesApi from "@/lib/api/footer-services";
-import { baseApi, tags, useAppDispatch } from "@/lib/store";
+import * as footerSocialLinksApi from "@/lib/api/footer-social-links";
+import { tags } from "@/lib/store";
 import { footerInfoSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
-import type { SocialLink } from "@/lib/types";
 import type { z } from "zod";
 import { FooterServiceForm } from "./FooterServiceForm";
+import { FooterSocialLinkForm } from "./FooterSocialLinkForm";
 
 type FormValues = z.infer<typeof footerInfoSchema>;
 
@@ -43,10 +40,8 @@ const defaultValues: FormValues = {
 export default function FooterPage() {
   const { data: footerInfo, isLoading: isInfoLoading } = useFooterInfo();
   const { data: services = [], isLoading: isServicesLoading } = useFooterServices();
-  const { data: footerCollections, isLoading: isSocialsLoading } = useFooter();
+  const { data: socialLinks = [], isLoading: isSocialsLoading } = useFooterSocialLinks();
   const updateInfo = useUpdateFooterInfo();
-  const dispatch = useAppDispatch();
-  const [deletingSocial, setDeletingSocial] = useState<SocialLink | null>(null);
 
   const formData: FormValues | undefined = footerInfo
     ? {
@@ -133,64 +128,26 @@ export default function FooterPage() {
         renderForm={(item, onClose) => <FooterServiceForm item={item} onClose={onClose} />}
       />
 
-      <FormSection title="روابط التواصل الاجتماعي">
-        {isSocialsLoading ? (
-          <p className="text-sm text-muted-foreground">جاري التحميل...</p>
-        ) : (
-          <>
-            <ReorderableList
-              items={footerCollections?.socials ?? []}
-              onReorder={async (reordered) => {
-                await api.reorderSocialLinks(reordered.map((s) => s.id));
-                dispatch(baseApi.util.invalidateTags(tags.footer));
-                toast.success("تم تحديث الترتيب");
-              }}
-              renderItem={(social) => (
-                <div className="flex flex-1 items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <Icon icon={social.icon} width={18} />
-                    <span>{social.platform}</span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => setDeletingSocial(social)}
-                  >
-                    <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
-                  </Button>
-                </div>
-              )}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={async () => {
-                await api.createSocialLink({
-                  platform: "instagram",
-                  url: "https://instagram.com",
-                  icon: "solar:instagram-bold",
-                });
-                dispatch(baseApi.util.invalidateTags(tags.footer));
-                toast.success("تمت الإضافة");
-              }}
-            >
-              إضافة رابط
-            </Button>
-          </>
-        )}
-      </FormSection>
-
-      <ConfirmDeleteDialog
-        open={!!deletingSocial}
-        onOpenChange={(open) => !open && setDeletingSocial(null)}
-        onConfirm={async () => {
-          if (!deletingSocial) return;
-          await api.deleteSocialLink(deletingSocial.id);
-          dispatch(baseApi.util.invalidateTags(tags.footer));
-          setDeletingSocial(null);
-          toast.success("تم الحذف");
-        }}
+      <CollectionEditor
+        title="روابط التواصل الاجتماعي"
+        items={socialLinks}
+        isLoading={isSocialsLoading}
+        invalidateTags={tags.footerSocialLinks}
+        addLabel="إضافة رابط"
+        reorderable
+        getLabel={(item) => item.platform}
+        columns={[
+          {
+            key: "icon",
+            header: "الأيقونة",
+            render: (i) => <Icon icon={toDisplayIcon(i.icon)} width={18} />,
+          },
+          { key: "platform", header: "المنصة", render: (i) => i.platform },
+          { key: "url", header: "الرابط", render: (i) => i.url },
+        ]}
+        onDelete={(id) => footerSocialLinksApi.deleteLink(id)}
+        onReorder={(ids) => footerSocialLinksApi.reorder(ids)}
+        renderForm={(item, onClose) => <FooterSocialLinkForm item={item} onClose={onClose} />}
       />
     </div>
   );

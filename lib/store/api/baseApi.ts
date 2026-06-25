@@ -19,6 +19,7 @@ export const baseApi = createApi({
     "Footer",
     "FooterInfo",
     "FooterServices",
+    "FooterSocialLinks",
     "Media",
     "Auth",
   ],
