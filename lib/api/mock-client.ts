@@ -32,7 +32,17 @@ function requireAuth() {
   if (!getToken()) throw new Error("Unauthorized");
 }
 
-const demoUser: User = { id: "u_1", email: DEMO_EMAIL, role: "admin" };
+const demoUser: User = {
+  id: "u_1",
+  email: DEMO_EMAIL,
+  firstName: "Demo",
+  lastName: "Admin",
+  role: "admin",
+  isActive: true,
+  lastLoginAt: null,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
 
 export const mockApiClient: ApiClient = {
   async login(email, password) {

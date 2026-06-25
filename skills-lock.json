@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "nextjs-react-redux-typescript-cursor-rules": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "nextjs-react-redux-typescript-cursor-rules/SKILL.md",
+      "computedHash": "193dbf20b88355a133eefd3b7fdc4ad0df0519cbd52094198d1a65b911ef6985"
+    }
+  }
+}

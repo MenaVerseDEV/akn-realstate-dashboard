@@ -4,6 +4,7 @@ import { AUTH_COOKIE } from "@/lib/types";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  // Access token cookie set by /api/auth/login (readable); refresh is httpOnly
   const token = request.cookies.get(AUTH_COOKIE)?.value;
   const isLogin = pathname === "/admin/login";
   const isAdmin = pathname.startsWith("/admin");

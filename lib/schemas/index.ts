@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { DEFAULT_LANGUAGES } from "@/lib/types";
+
+export const defaultLanguageSchema = z.enum(DEFAULT_LANGUAGES);
 
 export const localizedStringSchema = z.object({
   ar: z.string().min(1, "الحقل العربي مطلوب"),
@@ -13,7 +16,8 @@ export const optionalLocalizedStringSchema = z.object({
 export const siteSettingsSchema = z.object({
   siteName: localizedStringSchema,
   logoUrl: z.string().nullable(),
-  defaultLocale: z.enum(["ar", "en"]),
+  defaultLocale: defaultLanguageSchema,
+  logoFile: z.custom<File | null>().nullable().optional(),
 });
 
 export const navLinkSchema = z.object({

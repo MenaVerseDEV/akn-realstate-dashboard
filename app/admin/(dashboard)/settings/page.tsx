@@ -3,9 +3,8 @@
 import { toast } from "sonner";
 import { FormSection } from "@/components/cms/FormSection";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
-import { MediaPicker } from "@/components/cms/MediaPicker";
+import { LogoUploadField } from "@/components/cms/LogoUploadField";
 import { SingletonForm } from "@/components/cms/SingletonForm";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -16,9 +15,23 @@ import {
 } from "@/components/ui/select";
 import { useSettings, useUpdateSettings } from "@/lib/hooks/use-cms";
 import { siteSettingsSchema } from "@/lib/schemas";
+import { DEFAULT_LANGUAGES, type DefaultLanguage } from "@/lib/types";
+
 import type { z } from "zod";
 
 type FormValues = z.infer<typeof siteSettingsSchema>;
+
+const languageLabels: Record<DefaultLanguage, string> = {
+  en: "English",
+  ar: "العربية",
+};
+
+const defaultValues: FormValues = {
+  siteName: { ar: "" },
+  logoUrl: null,
+  logoFile: null,
+  defaultLocale: "ar",
+};
 
 export default function SettingsPage() {
   const { data, isLoading } = useSettings();
@@ -29,6 +42,7 @@ export default function SettingsPage() {
         siteName: data.siteName,
         logoUrl: data.logoUrl,
         defaultLocale: data.defaultLocale,
+        logoFile: null,
       }
     : undefined;
 
@@ -37,11 +51,7 @@ export default function SettingsPage() {
       <h2 className="text-2xl font-bold text-dark">إعدادات الموقع</h2>
       <SingletonForm
         schema={siteSettingsSchema}
-        defaultValues={{
-          siteName: { ar: "" },
-          logoUrl: null,
-          defaultLocale: "ar",
-        }}
+        defaultValues={defaultValues}
         data={formData}
         isLoading={isLoading}
         saving={update.isPending}
@@ -49,8 +59,8 @@ export default function SettingsPage() {
           try {
             await update.mutateAsync(values);
             toast.success("تم حفظ الإعدادات");
-          } catch {
-            toast.error("فشل الحفظ");
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "فشل الحفظ");
           }
         }}
       >
@@ -66,22 +76,26 @@ export default function SettingsPage() {
               <Select
                 value={form.watch("defaultLocale")}
                 onValueChange={(v) =>
-                  form.setValue("defaultLocale", v as "ar" | "en", { shouldDirty: true })
+                  form.setValue("defaultLocale", v as DefaultLanguage, { shouldDirty: true })
                 }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ar">العربية</SelectItem>
-                  <SelectItem value="en">English</SelectItem>
+                  {DEFAULT_LANGUAGES.map((lang) => (
+                    <SelectItem key={lang} value={lang}>
+                      {languageLabels[lang]}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
-            <MediaPicker
-              label="الشعار"
-              value={form.watch("logoUrl")}
-              onChange={(v) => form.setValue("logoUrl", v, { shouldDirty: true })}
+            <LogoUploadField
+              logoUrl={form.watch("logoUrl")}
+              logoFile={form.watch("logoFile") ?? null}
+              onLogoUrlChange={(url) => form.setValue("logoUrl", url, { shouldDirty: true })}
+              onLogoFileChange={(file) => form.setValue("logoFile", file, { shouldDirty: true })}
             />
           </FormSection>
         )}

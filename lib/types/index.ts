@@ -3,13 +3,36 @@ export type LocalizedString = {
   en?: string;
 };
 
+export const DEFAULT_LANGUAGES = ["en", "ar"] as const;
+export type DefaultLanguage = (typeof DEFAULT_LANGUAGES)[number];
+
+export type ApiSuccessResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
+
+export type UserRole = "super_admin" | "admin";
+
 export type User = {
   id: string;
   email: string;
-  role: "admin";
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  isActive: boolean;
+  lastLoginAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type AuthResponse = {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+};
+
+export type RefreshResponse = {
   accessToken: string;
   refreshToken: string;
   user: User;
@@ -19,9 +42,26 @@ export type SiteSettings = {
   id: string;
   siteName: LocalizedString;
   logoUrl: string | null;
-  defaultLocale: "ar" | "en";
+  defaultLocale: DefaultLanguage;
   createdAt: string;
   updatedAt: string;
+};
+
+export type WebsiteSettingsApi = {
+  id?: string;
+  websiteName: LocalizedString;
+  defaultLanguage: DefaultLanguage;
+  logoUrl?: string | null;
+  logo?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type SiteSettingsFormValues = {
+  siteName: LocalizedString;
+  logoUrl: string | null;
+  defaultLocale: DefaultLanguage;
+  logoFile?: File | null;
 };
 
 export type NavLink = {
@@ -227,3 +267,4 @@ export type CollectionModule =
 export const DEMO_EMAIL = "owner@akn.sa";
 export const DEMO_PASSWORD = "admin123";
 export const AUTH_COOKIE = "akn_auth_token";
+export const REFRESH_COOKIE = "akn_refresh_token";

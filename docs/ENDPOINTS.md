@@ -92,7 +92,7 @@ Edited with `GET` + `PUT` (exactly one record, no create/delete).
 
 | Module | GET | PUT |
 |--------|-----|-----|
-| Site Settings | `/admin/settings` | `/admin/settings` |
+| Site Settings | `/website-settings` | `/website-settings` (multipart) |
 | Hero | `/admin/hero` | `/admin/hero` |
 | About | `/admin/about` | `/admin/about` |
 | Video Showcase | `/admin/video` | `/admin/video` |
@@ -118,6 +118,39 @@ Authorization: Bearer <jwt>
 
 > Nested collections of a singleton (Hero stats, About cards, Footer services & socials) can be
 > sent inline in the singleton `PUT` (full replace), or managed individually via the sub-routes below.
+
+### Website settings (real API)
+
+Production path: `GET/PUT /api/v1/website-settings` (Bearer required).
+
+`defaultLanguage` enum: `en` | `ar`.
+
+```http
+GET /api/v1/website-settings
+Authorization: Bearer <jwt>
+
+200 OK
+{
+  "success": true,
+  "data": {
+    "websiteName": { "ar": "أكن", "en": "AKN" },
+    "defaultLanguage": "ar",
+    "logoUrl": "https://..."
+  }
+}
+```
+
+```http
+PUT /api/v1/website-settings
+Authorization: Bearer <jwt>
+Content-Type: multipart/form-data
+
+websiteName={"ar":"أكن","en":"AKN"}
+defaultLanguage=ar
+logo=@logo.webp;type=image/webp
+```
+
+The dashboard proxies these via `GET/PUT /api/website-settings` (Next.js BFF).
 
 ### Singleton sub-collections
 

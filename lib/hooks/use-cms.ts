@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getApiClient } from "@/lib/api";
+import * as settingsApi from "@/lib/api/settings";
+import type { SiteSettingsFormValues } from "@/lib/types";
 
 const api = getApiClient();
 
 export const queryKeys = {
-  me: ["auth", "me"] as const,
   settings: ["settings"] as const,
   nav: ["nav"] as const,
   hero: ["hero"] as const,
@@ -22,35 +23,14 @@ export const queryKeys = {
   media: (page: number, type?: string) => ["media", page, type] as const,
 };
 
-export function useMe() {
-  return useQuery({ queryKey: queryKeys.me, queryFn: () => api.me(), retry: false });
-}
-
-export function useLogin() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      api.login(email, password),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.me }),
-  });
-}
-
-export function useLogout() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: () => api.logout(),
-    onSuccess: () => qc.clear(),
-  });
-}
-
 export function useSettings() {
-  return useQuery({ queryKey: queryKeys.settings, queryFn: () => api.getSettings() });
+  return useQuery({ queryKey: queryKeys.settings, queryFn: () => settingsApi.getSettings() });
 }
 
 export function useUpdateSettings() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Parameters<typeof api.updateSettings>[0]) => api.updateSettings(data),
+    mutationFn: (data: SiteSettingsFormValues) => settingsApi.updateSettings(data),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.settings }),
   });
 }
