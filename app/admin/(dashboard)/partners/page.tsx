@@ -4,7 +4,8 @@ import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { CollectionForm } from "@/components/cms/CollectionForm";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { MediaPicker } from "@/components/cms/MediaPicker";
-import { api, queryKeys, usePartners } from "@/lib/hooks/use-cms";
+import { api, usePartners } from "@/lib/hooks/use-cms";
+import { tags } from "@/lib/store";
 import { partnerSchema } from "@/lib/schemas";
 import type { Partner } from "@/lib/types";
 import type { z } from "zod";
@@ -24,7 +25,7 @@ export default function PartnersPage() {
       title="الشركاء"
       items={items}
       isLoading={isLoading}
-      queryKey={queryKeys.partners}
+      invalidateTags={tags.partners}
       addLabel="إضافة شريك"
       reorderable
       getLabel={(item) => item.name.ar}
@@ -36,7 +37,7 @@ export default function PartnersPage() {
           schema={partnerSchema}
           defaultValues={defaults}
           item={item ? { name: item.name, logoUrl: item.logoUrl } : null}
-          queryKey={queryKeys.partners}
+          invalidateTags={tags.partners}
           onClose={onClose}
           onSubmit={async (values) => {
             if (item) await api.updatePartner(item.id, values);

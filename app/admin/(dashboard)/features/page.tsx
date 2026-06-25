@@ -5,7 +5,8 @@ import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { CollectionForm } from "@/components/cms/CollectionForm";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { IconPicker } from "@/components/cms/IconPicker";
-import { api, queryKeys, useFeatures } from "@/lib/hooks/use-cms";
+import { api, useFeatures } from "@/lib/hooks/use-cms";
+import { tags } from "@/lib/store";
 import { featureSchema } from "@/lib/schemas";
 import type { Feature } from "@/lib/types";
 import type { z } from "zod";
@@ -26,7 +27,7 @@ export default function FeaturesPage() {
       title="المميزات"
       items={items}
       isLoading={isLoading}
-      queryKey={queryKeys.features}
+      invalidateTags={tags.features}
       addLabel="إضافة ميزة"
       reorderable
       getLabel={(item) => item.title.ar}
@@ -42,7 +43,7 @@ export default function FeaturesPage() {
               ? { title: item.title, description: item.description, icon: item.icon }
               : null
           }
-          queryKey={queryKeys.features}
+          invalidateTags={tags.features}
           onClose={onClose}
           onSubmit={async (values) => {
             if (item) await api.updateFeature(item.id, values);

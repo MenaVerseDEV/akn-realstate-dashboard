@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
 import { MediaDropzone } from "@/components/cms/MediaDropzone";
 import { MediaPreview } from "@/components/cms/MediaPreview";
 import { useMedia, api } from "@/lib/hooks/use-cms";
+import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import { toast } from "sonner";
 import { GridLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 import { cn } from "@/lib/utils";
@@ -42,7 +42,7 @@ export function MediaPicker({
   const [uploadFileName, setUploadFileName] = useState<string | null>(null);
   const [uploadIsVideo, setUploadIsVideo] = useState(false);
   const previewUrlRef = useRef<string | null>(null);
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const { data, isLoading } = useMedia(1, "image");
 
   const clearUploadPreview = useCallback(() => {
@@ -69,7 +69,7 @@ export function MediaPicker({
 
       try {
         const asset = await api.uploadMedia(file);
-        await qc.invalidateQueries({ queryKey: ["media"] });
+        dispatch(baseApi.util.invalidateTags(tags.media));
         onChange(asset.url);
         toast.success("تم رفع الملف");
         setOpen(false);
@@ -80,7 +80,7 @@ export function MediaPicker({
         clearUploadPreview();
       }
     },
-    [clearUploadPreview, onChange, qc],
+    [clearUploadPreview, dispatch, onChange],
   );
 
   const handleRemove = () => {

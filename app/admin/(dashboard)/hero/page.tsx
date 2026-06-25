@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react";
 import { FormSection } from "@/components/cms/FormSection";
@@ -13,7 +12,8 @@ import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { api, queryKeys, useHero, useUpdateHero } from "@/lib/hooks/use-cms";
+import { api, useHero, useUpdateHero } from "@/lib/hooks/use-cms";
+import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import { heroSchema } from "@/lib/schemas";
 import { ltrInputClass, rtlInputClass } from "@/lib/i18n";
 import type { HeroStat } from "@/lib/types";
@@ -24,7 +24,7 @@ type FormValues = z.infer<typeof heroSchema>;
 export default function HeroPage() {
   const { data, isLoading } = useHero();
   const update = useUpdateHero();
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const [deletingStat, setDeletingStat] = useState<HeroStat | null>(null);
   const [stats, setStats] = useState<HeroStat[]>([]);
 
@@ -112,7 +112,7 @@ export default function HeroPage() {
           onReorder={async (reordered) => {
             setStats(reordered);
             await api.reorderHeroStats(reordered.map((s) => s.id));
-            await qc.invalidateQueries({ queryKey: queryKeys.hero });
+            dispatch(baseApi.util.invalidateTags(tags.hero));
             toast.success("تم تحديث الترتيب");
           }}
           renderItem={(stat) => (
@@ -138,7 +138,7 @@ export default function HeroPage() {
               label: { ar: "إحصائية جديدة" },
               icon: "solar:star-bold",
             });
-            await qc.invalidateQueries({ queryKey: queryKeys.hero });
+            dispatch(baseApi.util.invalidateTags(tags.hero));
             toast.success("تمت الإضافة");
           }}
         >
@@ -152,7 +152,7 @@ export default function HeroPage() {
         onConfirm={async () => {
           if (!deletingStat) return;
           await api.deleteHeroStat(deletingStat.id);
-          await qc.invalidateQueries({ queryKey: queryKeys.hero });
+          dispatch(baseApi.util.invalidateTags(tags.hero));
           setDeletingStat(null);
           toast.success("تم الحذف");
         }}

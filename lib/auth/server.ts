@@ -158,3 +158,26 @@ export async function apiLogout(accessToken: string): Promise<void> {
     await parseApiResponse<unknown>(response);
   }
 }
+
+export async function authorizedJsonFetch(
+  accessToken: string,
+  path: string,
+  init: RequestInit = {},
+  acceptLanguage?: string,
+): Promise<Response> {
+  const headers = new Headers(init.headers);
+  headers.set("accept", "application/json");
+  headers.set("Authorization", `Bearer ${accessToken}`);
+
+  if (acceptLanguage) {
+    headers.set("Accept-Language", acceptLanguage);
+  }
+
+  const url = path.startsWith("http") ? path : `${getApiBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+
+  return fetch(url, {
+    ...init,
+    headers,
+    cache: "no-store",
+  });
+}

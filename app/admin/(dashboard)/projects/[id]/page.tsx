@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,14 +11,15 @@ import { PageLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 import { ReorderableList } from "@/components/cms/ReorderableList";
 import { MediaPicker } from "@/components/cms/MediaPicker";
 import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
-import { api, queryKeys, useProject } from "@/lib/hooks/use-cms";
+import { api, useProject } from "@/lib/hooks/use-cms";
+import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import type { ProjectMedia } from "@/lib/types";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const { data: project, isLoading } = useProject(id);
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const [deleting, setDeleting] = useState<ProjectMedia | null>(null);
   const [newMediaUrl, setNewMediaUrl] = useState<string | null>(null);
 
@@ -30,7 +30,7 @@ export default function ProjectDetailPage() {
     if (!newMediaUrl) return;
     try {
       await api.addProjectMedia(id, { url: newMediaUrl, type: "image", caption: null });
-      await qc.invalidateQueries({ queryKey: queryKeys.project(id) });
+      dispatch(baseApi.util.invalidateTags(tags.project(id)));
       setNewMediaUrl(null);
       toast.success("تمت إضافة الوسائط");
     } catch {
@@ -69,7 +69,7 @@ export default function ProjectDetailPage() {
             items={project.media}
             onReorder={async (reordered) => {
               await api.reorderProjectMedia(id, reordered.map((m) => m.id));
-              await qc.invalidateQueries({ queryKey: queryKeys.project(id) });
+              dispatch(baseApi.util.invalidateTags(tags.project(id)));
               toast.success("تم تحديث الترتيب");
             }}
             renderItem={(media) => (
@@ -99,7 +99,7 @@ export default function ProjectDetailPage() {
         onConfirm={async () => {
           if (!deleting) return;
           await api.deleteProjectMedia(id, deleting.id);
-          await qc.invalidateQueries({ queryKey: queryKeys.project(id) });
+          dispatch(baseApi.util.invalidateTags(tags.project(id)));
           setDeleting(null);
           toast.success("تم الحذف");
         }}

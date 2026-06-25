@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,14 +15,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
-import { api, queryKeys, useMedia } from "@/lib/hooks/use-cms";
+import { api, useMedia } from "@/lib/hooks/use-cms";
+import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import { rtlInputClass } from "@/lib/i18n";
 import type { MediaAsset } from "@/lib/types";
 
 export default function MediaLibraryPage() {
   const [typeFilter, setTypeFilter] = useState<"image" | "video" | "all">("all");
   const [deleting, setDeleting] = useState<MediaAsset | null>(null);
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
 
   const filter = typeFilter === "all" ? undefined : typeFilter;
   const { data, isLoading } = useMedia(1, filter);
@@ -33,7 +33,7 @@ export default function MediaLibraryPage() {
     if (!file) return;
     try {
       await api.uploadMedia(file);
-      await qc.invalidateQueries({ queryKey: ["media"] });
+      dispatch(baseApi.util.invalidateTags(tags.media));
       toast.success("تم رفع الملف");
     } catch {
       toast.error("فشل الرفع");
@@ -44,7 +44,7 @@ export default function MediaLibraryPage() {
     if (!deleting) return;
     try {
       await api.deleteMedia(deleting.id);
-      await qc.invalidateQueries({ queryKey: ["media"] });
+      dispatch(baseApi.util.invalidateTags(tags.media));
       setDeleting(null);
       toast.success("تم الحذف");
     } catch (error) {

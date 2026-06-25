@@ -1,57 +1,24 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as session from "@/lib/auth/session";
-import { clearAuth, setAuthStatus, setUser, useAppDispatch } from "@/lib/store";
+import { useGetMeQuery, useLoginMutation, useLogoutMutation } from "@/lib/store/api";
 
-export const queryKeys = {
-  me: ["auth", "me"] as const,
-};
+function wrapMutation<T extends (...args: never[]) => unknown>(
+  useMutationHook: () => readonly [T, { isLoading: boolean; isError: boolean; isSuccess: boolean; error: unknown }],
+) {
+  return function useWrappedMutation() {
+    const [mutateAsync, state] = useMutationHook();
+    return {
+      mutateAsync,
+      mutate: mutateAsync,
+      ...state,
+      isPending: state.isLoading,
+    };
+  };
+}
 
 export function useMe() {
-  const dispatch = useAppDispatch();
-
-  return useQuery({
-    queryKey: queryKeys.me,
-    queryFn: async () => {
-      dispatch(setAuthStatus("loading"));
-      try {
-        const user = await session.me();
-        dispatch(setUser(user));
-        return user;
-      } catch (error) {
-        dispatch(clearAuth());
-        throw error;
-      }
-    },
-    retry: false,
-    staleTime: 5 * 60 * 1000,
-  });
+  return useGetMeQuery();
 }
 
-export function useLogin() {
-  const dispatch = useAppDispatch();
-  const qc = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      session.login(email, password),
-    onSuccess: (data) => {
-      dispatch(setUser(data.user));
-      qc.invalidateQueries({ queryKey: queryKeys.me });
-    },
-  });
-}
-
-export function useLogout() {
-  const dispatch = useAppDispatch();
-  const qc = useQueryClient();
-
-  return useMutation({
-    mutationFn: () => session.logout(),
-    onSuccess: () => {
-      dispatch(clearAuth());
-      qc.clear();
-    },
-  });
-}
+export const useLogin = wrapMutation(useLoginMutation);
+export const useLogout = wrapMutation(useLogoutMutation);

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react";
 import { FormSection } from "@/components/cms/FormSection";
@@ -11,7 +10,8 @@ import { SingletonForm } from "@/components/cms/SingletonForm";
 import { ReorderableList } from "@/components/cms/ReorderableList";
 import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
 import { Button } from "@/components/ui/button";
-import { api, queryKeys, useAbout, useUpdateAbout } from "@/lib/hooks/use-cms";
+import { api, useAbout, useUpdateAbout } from "@/lib/hooks/use-cms";
+import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import { aboutSchema } from "@/lib/schemas";
 import type { AboutCard } from "@/lib/types";
 import type { z } from "zod";
@@ -21,7 +21,7 @@ type FormValues = z.infer<typeof aboutSchema>;
 export default function AboutPage() {
   const { data, isLoading } = useAbout();
   const update = useUpdateAbout();
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const [deletingCard, setDeletingCard] = useState<AboutCard | null>(null);
 
   const formData: FormValues | undefined = data
@@ -71,7 +71,7 @@ export default function AboutPage() {
           items={data?.cards ?? []}
           onReorder={async (reordered) => {
             await api.reorderAboutCards(reordered.map((c) => c.id));
-            await qc.invalidateQueries({ queryKey: queryKeys.about });
+            dispatch(baseApi.util.invalidateTags(tags.about));
             toast.success("تم تحديث الترتيب");
           }}
           renderItem={(card) => (
@@ -95,7 +95,7 @@ export default function AboutPage() {
               description: { ar: "وصف البطاقة" },
               icon: "solar:star-bold",
             });
-            await qc.invalidateQueries({ queryKey: queryKeys.about });
+            dispatch(baseApi.util.invalidateTags(tags.about));
             toast.success("تمت الإضافة");
           }}
         >
@@ -109,7 +109,7 @@ export default function AboutPage() {
         onConfirm={async () => {
           if (!deletingCard) return;
           await api.deleteAboutCard(deletingCard.id);
-          await qc.invalidateQueries({ queryKey: queryKeys.about });
+          dispatch(baseApi.util.invalidateTags(tags.about));
           setDeletingCard(null);
           toast.success("تم الحذف");
         }}

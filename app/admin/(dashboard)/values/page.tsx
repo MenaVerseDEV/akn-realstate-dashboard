@@ -6,7 +6,8 @@ import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { CollectionForm } from "@/components/cms/CollectionForm";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { IconPicker } from "@/components/cms/IconPicker";
-import { api, queryKeys, useValues } from "@/lib/hooks/use-cms";
+import { api, useValues } from "@/lib/hooks/use-cms";
+import { tags } from "@/lib/store";
 import { valueSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
 import type { Value } from "@/lib/types";
@@ -29,7 +30,7 @@ export default function ValuesPage() {
       title="القيم"
       items={items}
       isLoading={isLoading}
-      queryKey={queryKeys.values}
+      invalidateTags={tags.values}
       addLabel="إضافة قيمة"
       reorderable
       getLabel={(item) => item.title.ar}
@@ -48,7 +49,7 @@ export default function ValuesPage() {
               ? { title: item.title, description: item.description, icon: item.icon, color: item.color }
               : null
           }
-          queryKey={queryKeys.values}
+          invalidateTags={tags.values}
           onClose={onClose}
           onSubmit={async (values) => {
             if (item) await api.updateValue(item.id, values);

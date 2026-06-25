@@ -121,14 +121,17 @@ export const socialLinkSchema = z.object({
   icon: z.string().min(1),
 });
 
-export const footerSchema = z.object({
+export const footerInfoSchema = z.object({
   companyName: localizedStringSchema,
   description: localizedStringSchema,
-  logoUrl: z.string().nullable(),
   address: localizedStringSchema,
-  phone: z.string().min(1),
+  logoUrl: z.string().nullable(),
+  logoFile: z.custom<File | null>().nullable().optional(),
+  phone: z.string(),
   email: z.string().email(),
 });
+
+export const footerSchema = footerInfoSchema;
 
 export const loginSchema = z.object({
   email: z.string().email("البريد الإلكتروني غير صالح"),

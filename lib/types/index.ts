@@ -74,6 +74,28 @@ export type NavLink = {
   updatedAt: string;
 };
 
+export type NavBarPageApi = {
+  id: string;
+  title: LocalizedString | string;
+  link: string;
+  isActive: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type NavBarPageInput = {
+  title: LocalizedString;
+  link: string;
+  isActive: boolean;
+};
+
+export type NavLinkFormValues = {
+  label: LocalizedString;
+  href: string;
+  visible: boolean;
+};
+
 export type HeroStat = {
   id: string;
   value: number;
@@ -211,6 +233,39 @@ export type FooterService = {
   title: LocalizedString;
   description: LocalizedString;
   order: number;
+};
+
+export type FooterInfoApi = {
+  websiteName: LocalizedString;
+  websiteDescription: LocalizedString;
+  address: LocalizedString;
+  logoUrl?: string | null;
+  logoPath?: string | null;
+  phone: string;
+  email: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type FooterInfo = {
+  companyName: LocalizedString;
+  description: LocalizedString;
+  address: LocalizedString;
+  logoUrl: string | null;
+  phone: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FooterInfoFormValues = {
+  companyName: LocalizedString;
+  description: LocalizedString;
+  address: LocalizedString;
+  logoUrl: string | null;
+  phone: string;
+  email: string;
+  logoFile?: File | null;
 };
 
 export type SocialLink = {

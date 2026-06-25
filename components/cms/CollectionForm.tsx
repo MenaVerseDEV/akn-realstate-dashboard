@@ -3,18 +3,18 @@
 import { useEffect } from "react";
 import { useForm, type DefaultValues, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { baseApi, useAppDispatch, type CacheTag } from "@/lib/store";
 
 type CollectionFormProps<T extends Record<string, unknown>> = {
   schema: z.ZodType<T>;
   defaultValues: T;
   item?: T | null;
   onSubmit: (values: T) => Promise<void>;
-  queryKey: readonly unknown[];
+  invalidateTags: CacheTag[];
   onClose: () => void;
   children: (form: ReturnType<typeof useForm<T>>) => React.ReactNode;
 };
@@ -24,11 +24,11 @@ export function CollectionForm<T extends Record<string, unknown>>({
   defaultValues,
   item,
   onSubmit,
-  queryKey,
+  invalidateTags,
   onClose,
   children,
 }: CollectionFormProps<T>) {
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
   const form = useForm<T>({
     resolver: zodResolver(schema as never) as Resolver<T>,
     defaultValues: (item ?? defaultValues) as DefaultValues<T>,
@@ -41,7 +41,7 @@ export function CollectionForm<T extends Record<string, unknown>>({
   const handleSubmit = async (values: T) => {
     try {
       await onSubmit(values);
-      await qc.invalidateQueries({ queryKey });
+      dispatch(baseApi.util.invalidateTags(invalidateTags));
       toast.success(item ? "تم التحديث" : "تمت الإضافة");
       onClose();
     } catch {

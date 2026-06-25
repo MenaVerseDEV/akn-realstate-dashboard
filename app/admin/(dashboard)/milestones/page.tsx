@@ -6,7 +6,8 @@ import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { CollectionForm } from "@/components/cms/CollectionForm";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { IconPicker } from "@/components/cms/IconPicker";
-import { api, queryKeys, useMilestones } from "@/lib/hooks/use-cms";
+import { api, useMilestones } from "@/lib/hooks/use-cms";
+import { tags } from "@/lib/store";
 import { milestoneSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
 import type { Milestone } from "@/lib/types";
@@ -29,7 +30,7 @@ export default function MilestonesPage() {
       title="التطلعات"
       items={items}
       isLoading={isLoading}
-      queryKey={queryKeys.milestones}
+      invalidateTags={tags.milestones}
       addLabel="إضافة تطلع"
       reorderable
       getLabel={(item) => `${item.year} — ${item.title.ar}`}
@@ -48,7 +49,7 @@ export default function MilestonesPage() {
               ? { year: item.year, title: item.title, description: item.description, icon: item.icon }
               : null
           }
-          queryKey={queryKeys.milestones}
+          invalidateTags={tags.milestones}
           onClose={onClose}
           onSubmit={async (values) => {
             if (item) await api.updateMilestone(item.id, values);

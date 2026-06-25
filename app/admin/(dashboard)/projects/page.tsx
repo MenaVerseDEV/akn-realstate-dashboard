@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { api, queryKeys, useProjects } from "@/lib/hooks/use-cms";
+import { api, useProjects } from "@/lib/hooks/use-cms";
+import { tags } from "@/lib/store";
 import { projectSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
 import type { Project } from "@/lib/types";
@@ -47,7 +48,7 @@ export default function ProjectsPage() {
       title="المشاريع"
       items={items}
       isLoading={isLoading}
-      queryKey={queryKeys.projects}
+      invalidateTags={tags.projects}
       addLabel="إضافة مشروع"
       getLabel={(item) => item.name.ar}
       columns={[
@@ -99,7 +100,7 @@ export default function ProjectsPage() {
                 }
               : null
           }
-          queryKey={queryKeys.projects}
+          invalidateTags={tags.projects}
           onClose={onClose}
           onSubmit={async (values) => {
             if (item) await api.updateProject(item.id, values);

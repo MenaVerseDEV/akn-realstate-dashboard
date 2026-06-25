@@ -152,6 +152,62 @@ logo=@logo.webp;type=image/webp
 
 The dashboard proxies these via `GET/PUT /api/website-settings` (Next.js BFF).
 
+### Navigation bar pages (real API)
+
+Production path: `/api/v1/nav-bar-pages` (Bearer required).
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/nav-bar-pages` | — (list; `title` localized via `Accept-Language`) |
+| POST | `/nav-bar-pages` | `{ title: { ar, en }, link, isActive }` |
+| GET | `/nav-bar-pages/:id` | — |
+| PUT | `/nav-bar-pages/:id` | `{ title, link, isActive }` |
+| DELETE | `/nav-bar-pages/:id` | — |
+| PUT | `/nav-bar-pages/reorder` | `{ ids: string[] }` |
+
+Field mapping in dashboard: `title→label`, `link→href`, `isActive→visible`.
+
+The BFF merges bilingual titles on list by fetching with `Accept-Language: ar` and `en`.
+
+Dashboard proxy routes: `/api/nav-bar-pages`, `/api/nav-bar-pages/[id]`, `/api/nav-bar-pages/reorder`.
+
+### Footer info (real API)
+
+Production path: `GET/PUT /api/v1/footer/info` (Bearer required).
+
+```http
+GET /api/v1/footer/info
+
+200 OK
+{
+  "success": true,
+  "data": {
+    "websiteName": { "ar": "أكن", "en": "akn" },
+    "websiteDescription": { "ar": "...", "en": "..." },
+    "address": { "ar": "...", "en": "..." },
+    "logoUrl": null,
+    "phone": "",
+    "email": "info@example.com"
+  }
+}
+```
+
+```http
+PUT /api/v1/footer/info
+Content-Type: multipart/form-data
+
+websiteName={"ar":"أكن","en":"akn"}
+websiteDescription={"ar":"...","en":"..."}
+address={"ar":"...","en":"..."}
+logo=@logo.webp
+phone=+201000000000
+email=info@example.com
+```
+
+Field mapping: `websiteName→companyName`, `websiteDescription→description`, `logo→logoFile`.
+
+Dashboard proxy: `GET/PUT /api/footer/info`. Services and socials remain mock.
+
 ### Singleton sub-collections
 
 | Path | Methods |

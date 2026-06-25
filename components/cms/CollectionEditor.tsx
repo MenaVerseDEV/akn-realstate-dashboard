@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CollectionTable } from "./CollectionTable";
 import { ReorderableList } from "./ReorderableList";
@@ -13,6 +12,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { baseApi, useAppDispatch, type CacheTag } from "@/lib/store";
 
 type CollectionEditorProps<T extends { id: string }> = {
   title: string;
@@ -22,7 +22,7 @@ type CollectionEditorProps<T extends { id: string }> = {
   renderForm: (item: T | null, onClose: () => void) => React.ReactNode;
   onDelete: (id: string) => Promise<unknown>;
   onReorder?: (ids: string[]) => Promise<unknown>;
-  queryKey: readonly unknown[];
+  invalidateTags: CacheTag[];
   addLabel?: string;
   reorderable?: boolean;
   getLabel?: (item: T) => string;
@@ -36,7 +36,7 @@ export function CollectionEditor<T extends { id: string }>({
   renderForm,
   onDelete,
   onReorder,
-  queryKey,
+  invalidateTags,
   addLabel,
   reorderable,
   getLabel,
@@ -45,7 +45,7 @@ export function CollectionEditor<T extends { id: string }>({
   const [deleting, setDeleting] = useState<T | null>(null);
   const [view, setView] = useState<"table" | "reorder">("table");
   const [localItems, setLocalItems] = useState(items);
-  const qc = useQueryClient();
+  const dispatch = useAppDispatch();
 
   const displayItems = view === "reorder" ? localItems : items;
 
@@ -53,7 +53,7 @@ export function CollectionEditor<T extends { id: string }>({
     if (!deleting) return;
     try {
       await onDelete(deleting.id);
-      await qc.invalidateQueries({ queryKey });
+      dispatch(baseApi.util.invalidateTags(invalidateTags));
       toast.success("تم الحذف");
       setDeleting(null);
     } catch {
@@ -66,7 +66,7 @@ export function CollectionEditor<T extends { id: string }>({
     if (!onReorder) return;
     try {
       await onReorder(reordered.map((i) => i.id));
-      await qc.invalidateQueries({ queryKey });
+      dispatch(baseApi.util.invalidateTags(invalidateTags));
       toast.success("تم تحديث الترتيب");
     } catch {
       toast.error("فشل تحديث الترتيب");
