@@ -289,8 +289,15 @@ export const mockStore = {
     store.footer = { ...store.footer, ...data, updatedAt: touch() };
     return store.footer;
   },
-  createFooterService: (data: Omit<FooterService, "id" | "order">) => {
-    const service: FooterService = { ...data, id: store.newId(), order: store.footer.services.length };
+  createFooterService: (data: Omit<FooterService, "id" | "order" | "createdAt" | "updatedAt">) => {
+    const now = touch();
+    const service: FooterService = {
+      ...data,
+      id: store.newId(),
+      order: store.footer.services.length,
+      createdAt: now,
+      updatedAt: now,
+    };
     store.footer.services.push(service);
     store.footer.updatedAt = touch();
     return service;

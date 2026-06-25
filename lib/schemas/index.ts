@@ -112,7 +112,7 @@ export const contactSchema = z.object({
 
 export const footerServiceSchema = z.object({
   title: localizedStringSchema,
-  description: localizedStringSchema,
+  link: z.string().min(1),
 });
 
 export const socialLinkSchema = z.object({

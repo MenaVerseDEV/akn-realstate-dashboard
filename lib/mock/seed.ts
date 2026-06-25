@@ -226,9 +226,30 @@ export function createSeedData() {
     phone: "920015990",
     email: "info@akn.sa",
     services: [
-      { id: "fs1", title: loc("التطوير السكني"), description: loc("مشاريع سكنية فاخرة بمعايير عالمية"), order: 0 },
-      { id: "fs2", title: loc("الاستشارات العقارية"), description: loc("استشارات متخصصة لاختيار الوحدة المناسبة"), order: 1 },
-      { id: "fs3", title: loc("إدارة المشاريع"), description: loc("إدارة شاملة لجميع مراحل المشروع"), order: 2 },
+      {
+        id: "fs1",
+        title: loc("التطوير السكني"),
+        link: "/services/residential",
+        order: 0,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: "fs2",
+        title: loc("الاستشارات العقارية"),
+        link: "/services/consulting",
+        order: 1,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: "fs3",
+        title: loc("إدارة المشاريع"),
+        link: "/services/project-management",
+        order: 2,
+        createdAt: now(),
+        updatedAt: now(),
+      },
     ],
     socials: [
       { id: "sl1", platform: "instagram", url: "https://instagram.com", icon: "solar:instagram-bold", order: 0 },

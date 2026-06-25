@@ -20,6 +20,8 @@ export { useListNavQuery, useGetNavByIdQuery } from "./navApi";
 export {
   useGetFooterInfoQuery,
   useUpdateFooterInfoMutation,
+  useListFooterServicesQuery,
+  useGetFooterServiceByIdQuery,
   useGetFooterQuery,
   useUpdateFooterMutation,
 } from "./footerApi";

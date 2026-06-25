@@ -12,6 +12,7 @@ export type CacheTag =
   | "Contact"
   | "Footer"
   | "FooterInfo"
+  | "FooterServices"
   | "Media"
   | "Auth"
   | { type: "Project"; id: string }
@@ -32,6 +33,7 @@ export const tags = {
   contact: ["Contact"] as CacheTag[],
   footer: ["Footer"] as CacheTag[],
   footerInfo: ["FooterInfo"] as CacheTag[],
+  footerServices: ["FooterServices"] as CacheTag[],
   media: ["Media"] as CacheTag[],
   auth: ["Auth"] as CacheTag[],
 };

@@ -95,7 +95,7 @@ export interface ApiClient {
 
   getFooter(): Promise<Footer>;
   updateFooter(data: Partial<Footer>): Promise<Footer>;
-  createFooterService(data: Omit<FooterService, "id" | "order">): Promise<FooterService>;
+  createFooterService(data: Omit<FooterService, "id" | "order" | "createdAt" | "updatedAt">): Promise<FooterService>;
   updateFooterService(id: string, data: Partial<FooterService>): Promise<FooterService>;
   deleteFooterService(id: string): Promise<void>;
   reorderFooterServices(ids: string[]): Promise<FooterService[]>;

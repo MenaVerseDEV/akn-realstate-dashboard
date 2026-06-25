@@ -228,11 +228,32 @@ export type Contact = {
   updatedAt: string;
 };
 
+export type FooterServiceApi = {
+  id: string;
+  title: string | LocalizedString;
+  link: string;
+  order?: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FooterServiceInput = {
+  title: { ar: string; en?: string };
+  link: string;
+};
+
 export type FooterService = {
   id: string;
   title: LocalizedString;
-  description: LocalizedString;
+  link: string;
   order: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FooterServiceFormValues = {
+  title: LocalizedString;
+  link: string;
 };
 
 export type FooterInfoApi = {

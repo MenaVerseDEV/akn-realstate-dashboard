@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react";
+import { CollectionEditor } from "@/components/cms/CollectionEditor";
 import { FormSection } from "@/components/cms/FormSection";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { LogoUploadField } from "@/components/cms/LogoUploadField";
@@ -16,13 +17,16 @@ import {
   api,
   useFooter,
   useFooterInfo,
+  useFooterServices,
   useUpdateFooterInfo,
 } from "@/lib/hooks/use-cms";
+import * as footerServicesApi from "@/lib/api/footer-services";
 import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import { footerInfoSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
-import type { FooterService, SocialLink } from "@/lib/types";
+import type { SocialLink } from "@/lib/types";
 import type { z } from "zod";
+import { FooterServiceForm } from "./FooterServiceForm";
 
 type FormValues = z.infer<typeof footerInfoSchema>;
 
@@ -38,10 +42,10 @@ const defaultValues: FormValues = {
 
 export default function FooterPage() {
   const { data: footerInfo, isLoading: isInfoLoading } = useFooterInfo();
-  const { data: footerCollections, isLoading: isCollectionsLoading } = useFooter();
+  const { data: services = [], isLoading: isServicesLoading } = useFooterServices();
+  const { data: footerCollections, isLoading: isSocialsLoading } = useFooter();
   const updateInfo = useUpdateFooterInfo();
   const dispatch = useAppDispatch();
-  const [deletingService, setDeletingService] = useState<FooterService | null>(null);
   const [deletingSocial, setDeletingSocial] = useState<SocialLink | null>(null);
 
   const formData: FormValues | undefined = footerInfo
@@ -112,49 +116,25 @@ export default function FooterPage() {
         )}
       </SingletonForm>
 
-      <FormSection title="الخدمات">
-        {isCollectionsLoading ? (
-          <p className="text-sm text-muted-foreground">جاري التحميل...</p>
-        ) : (
-          <>
-            <ReorderableList
-              items={footerCollections?.services ?? []}
-              onReorder={async (reordered) => {
-                await api.reorderFooterServices(reordered.map((s) => s.id));
-                dispatch(baseApi.util.invalidateTags(tags.footer));
-                toast.success("تم تحديث الترتيب");
-              }}
-              renderItem={(service) => (
-                <div className="flex flex-1 items-center justify-between">
-                  <span className="font-medium">{service.title.ar}</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => setDeletingService(service)}
-                  >
-                    <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
-                  </Button>
-                </div>
-              )}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              onClick={async () => {
-                await api.createFooterService({ title: { ar: "خدمة جديدة" }, description: { ar: "وصف الخدمة" } });
-                dispatch(baseApi.util.invalidateTags(tags.footer));
-                toast.success("تمت الإضافة");
-              }}
-            >
-              إضافة خدمة
-            </Button>
-          </>
-        )}
-      </FormSection>
+      <CollectionEditor
+        title="الخدمات"
+        items={services}
+        isLoading={isServicesLoading}
+        invalidateTags={tags.footerServices}
+        addLabel="إضافة خدمة"
+        reorderable
+        getLabel={(item) => item.title.ar}
+        columns={[
+          { key: "title", header: "العنوان", render: (i) => i.title.ar },
+          { key: "link", header: "الرابط", render: (i) => i.link },
+        ]}
+        onDelete={(id) => footerServicesApi.deleteService(id)}
+        onReorder={(ids) => footerServicesApi.reorder(ids)}
+        renderForm={(item, onClose) => <FooterServiceForm item={item} onClose={onClose} />}
+      />
 
       <FormSection title="روابط التواصل الاجتماعي">
-        {isCollectionsLoading ? (
+        {isSocialsLoading ? (
           <p className="text-sm text-muted-foreground">جاري التحميل...</p>
         ) : (
           <>
@@ -201,17 +181,6 @@ export default function FooterPage() {
         )}
       </FormSection>
 
-      <ConfirmDeleteDialog
-        open={!!deletingService}
-        onOpenChange={(open) => !open && setDeletingService(null)}
-        onConfirm={async () => {
-          if (!deletingService) return;
-          await api.deleteFooterService(deletingService.id);
-          dispatch(baseApi.util.invalidateTags(tags.footer));
-          setDeletingService(null);
-          toast.success("تم الحذف");
-        }}
-      />
       <ConfirmDeleteDialog
         open={!!deletingSocial}
         onOpenChange={(open) => !open && setDeletingSocial(null)}

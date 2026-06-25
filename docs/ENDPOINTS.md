@@ -206,7 +206,46 @@ email=info@example.com
 
 Field mapping: `websiteName→companyName`, `websiteDescription→description`, `logo→logoFile`.
 
-Dashboard proxy: `GET/PUT /api/footer/info`. Services and socials remain mock.
+Dashboard proxy: `GET/PUT /api/footer/info`. Socials remain mock.
+
+### Footer services (real API, client + RTK)
+
+Production path: `/api/v1/footer/services` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+```http
+GET /api/v1/footer/services
+Accept-Language: ar | en
+
+200 OK
+{
+  "success": true,
+  "data": [
+    {
+      "id": "uuid",
+      "title": "Consulting",
+      "link": "/services/consulting",
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
+}
+```
+
+```http
+PATCH /api/v1/footer/services/:id
+Content-Type: application/json
+
+{
+  "title": { "en": "Consulting", "ar": "استشارات" },
+  "link": "/services/consulting"
+}
+```
+
+Also: `POST /footer/services`, `DELETE /footer/services/:id`, `PUT /footer/services/reorder` with `{ ids: string[] }`.
+
+Field mapping: `title` merged from dual `Accept-Language` fetches; `link` stored as-is. List `order` is derived from array index.
+
+RTK: `useFooterServices()` → `listFooterServices` tag `FooterServices`.
 
 ### Singleton sub-collections
 
