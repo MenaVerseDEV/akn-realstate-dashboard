@@ -40,6 +40,7 @@ export {
   useGetVideoQuery,
   useUpdateVideoMutation,
   useGetValuesQuery,
+  useGetValueByIdQuery,
   useGetFeaturesQuery,
   useGetPartnersQuery,
   useGetContactQuery,

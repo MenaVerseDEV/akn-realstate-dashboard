@@ -1,6 +1,7 @@
 import { getApiClient } from "@/lib/api";
 import * as aboutApi from "@/lib/api/about";
 import * as aspirationsApi from "@/lib/api/aspirations";
+import * as valuesApi from "@/lib/api/values";
 import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
@@ -74,7 +75,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       invalidatesTags: ["Video"],
     }),
     getValues: builder.query<Value[], void>({
-      queryFn: () => wrapQueryFn(api.getValues()),
+      queryFn: () => wrapQueryFn(valuesApi.list()),
+      providesTags: ["Values"],
+    }),
+    getValueById: builder.query<Value, string>({
+      queryFn: (id) => wrapQueryFn(valuesApi.getById(id)),
       providesTags: ["Values"],
     }),
     getFeatures: builder.query<Feature[], void>({
@@ -116,6 +121,7 @@ export const {
   useGetVideoQuery,
   useUpdateVideoMutation,
   useGetValuesQuery,
+  useGetValueByIdQuery,
   useGetFeaturesQuery,
   useGetPartnersQuery,
   useGetContactQuery,

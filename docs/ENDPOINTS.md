@@ -415,6 +415,23 @@ Field mapping: API `year` (number) ↔ dashboard `Milestone.year` (string in for
 
 RTK: `useMilestones()` / `useGetMilestoneByIdQuery` → tag `Milestones`. Client: [`lib/api/aspirations.ts`](lib/api/aspirations.ts). Admin UI: `/admin/milestones`.
 
+### Home values (real API, direct client + RTK)
+
+Production path: `/api/v1/home/values` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/values` | — (`Accept-Language: ar` / `en`) |
+| GET | `/home/values/:id` | — |
+| POST | `/home/values` | `{ order?, title, description, icon, colorGradient }` |
+| PATCH | `/home/values/:id` | same fields |
+| DELETE | `/home/values/:id` | — |
+| PUT | `/home/values/reorder` | `{ ids: string[] }` |
+
+Field mapping: `colorGradient` ↔ dashboard `color`. List merge via dual `Accept-Language` fetches.
+
+RTK: `useValues()` / `useGetValueByIdQuery` → tag `Values`. Client: [`lib/api/values.ts`](lib/api/values.ts). Admin UI: `/admin/values`.
+
 ### Projects (real API, direct client + RTK)
 
 Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.

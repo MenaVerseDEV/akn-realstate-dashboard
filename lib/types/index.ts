@@ -354,6 +354,32 @@ export type Value = {
   updatedAt: string;
 };
 
+export type ValueApi = {
+  id: string;
+  order: number;
+  title: LocalizedString | string;
+  description: LocalizedString | string;
+  icon: string;
+  colorGradient: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ValueFormValues = {
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+  color: string;
+};
+
+export type ValueInput = {
+  order?: number;
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+  colorGradient: string;
+};
+
 export type Feature = {
   id: string;
   title: LocalizedString;
