@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useContact, useUpdateContact } from "@/lib/hooks/use-cms";
 import { contactSchema } from "@/lib/schemas";
-import { ltrInputClass, rtlInputClass } from "@/lib/i18n";
+import { ltrInputClass } from "@/lib/i18n";
 import type { z } from "zod";
 
 type FormValues = z.infer<typeof contactSchema>;
@@ -44,9 +44,9 @@ export default function ContactPage() {
           phone: "",
           email: "",
           mapUrl: null,
-          primaryCtaLabel: "",
+          primaryCtaLabel: { ar: "" },
           primaryCtaHref: "",
-          secondaryCtaLabel: "",
+          secondaryCtaLabel: { ar: "" },
           secondaryCtaHref: "",
         }}
         data={formData}
@@ -64,9 +64,22 @@ export default function ContactPage() {
         {(form) => (
           <>
             <FormSection title="المحتوى">
-              <LocalizedInput label="الشارة" value={form.watch("badge")} onChange={(v) => form.setValue("badge", v, { shouldDirty: true })} />
-              <LocalizedInput label="العنوان" value={form.watch("title")} onChange={(v) => form.setValue("title", v, { shouldDirty: true })} />
-              <LocalizedInput label="الوصف" value={form.watch("description")} onChange={(v) => form.setValue("description", v, { shouldDirty: true })} multiline />
+              <LocalizedInput
+                label="الشارة"
+                value={form.watch("badge")}
+                onChange={(v) => form.setValue("badge", v, { shouldDirty: true })}
+              />
+              <LocalizedInput
+                label="العنوان"
+                value={form.watch("title")}
+                onChange={(v) => form.setValue("title", v, { shouldDirty: true })}
+              />
+              <LocalizedInput
+                label="الوصف"
+                value={form.watch("description")}
+                onChange={(v) => form.setValue("description", v, { shouldDirty: true })}
+                multiline
+              />
             </FormSection>
             <FormSection title="بيانات التواصل">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -80,27 +93,38 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-2 sm:col-span-2">
                   <Label>رابط الخريطة</Label>
-                  <Input {...form.register("mapUrl")} dir="ltr" className={ltrInputClass} placeholder="https://..." />
+                  <Input
+                    {...form.register("mapUrl")}
+                    dir="ltr"
+                    className={ltrInputClass}
+                    placeholder="https://..."
+                  />
                 </div>
               </div>
             </FormSection>
             <FormSection title="أزرار الإجراء">
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>الزر الأساسي — النص</Label>
-                  <Input {...form.register("primaryCtaLabel")} dir="rtl" className={rtlInputClass} />
-                </div>
+                <LocalizedInput
+                  label="الزر الأساسي — النص"
+                  value={form.watch("primaryCtaLabel")}
+                  onChange={(v) => form.setValue("primaryCtaLabel", v, { shouldDirty: true })}
+                />
                 <div className="space-y-2">
                   <Label>الزر الأساسي — الرابط</Label>
                   <Input {...form.register("primaryCtaHref")} dir="ltr" className={ltrInputClass} />
                 </div>
-                <div className="space-y-2">
-                  <Label>الزر الثانوي — النص</Label>
-                  <Input {...form.register("secondaryCtaLabel")} dir="rtl" className={rtlInputClass} />
-                </div>
+                <LocalizedInput
+                  label="الزر الثانوي — النص"
+                  value={form.watch("secondaryCtaLabel")}
+                  onChange={(v) => form.setValue("secondaryCtaLabel", v, { shouldDirty: true })}
+                />
                 <div className="space-y-2">
                   <Label>الزر الثانوي — الرابط</Label>
-                  <Input {...form.register("secondaryCtaHref")} dir="ltr" className={ltrInputClass} />
+                  <Input
+                    {...form.register("secondaryCtaHref")}
+                    dir="ltr"
+                    className={ltrInputClass}
+                  />
                 </div>
               </div>
             </FormSection>

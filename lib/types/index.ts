@@ -452,12 +452,40 @@ export type Contact = {
   phone: string;
   email: string;
   mapUrl: string | null;
-  primaryCtaLabel: string;
+  primaryCtaLabel: LocalizedString;
   primaryCtaHref: string;
-  secondaryCtaLabel: string;
+  secondaryCtaLabel: LocalizedString;
   secondaryCtaHref: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type ContactUsSectionApi = {
+  subtitle: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  phone: string;
+  email: string;
+  mapLink: string | null;
+  primaryCtaLabel: LocalizedString;
+  primaryCtaLink: string;
+  secondaryCtaLabel: LocalizedString;
+  secondaryCtaLink: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ContactFormValues = {
+  badge: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  phone: string;
+  email: string;
+  mapUrl: string | null;
+  primaryCtaLabel: LocalizedString;
+  primaryCtaHref: string;
+  secondaryCtaLabel: LocalizedString;
+  secondaryCtaHref: string;
 };
 
 export type FooterServiceApi = {

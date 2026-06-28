@@ -13,3 +13,4 @@ export * as projectsApi from "@/lib/api/projects";
 export * as valuesApi from "@/lib/api/values";
 export * as featuresApi from "@/lib/api/features";
 export * as partnersApi from "@/lib/api/partners";
+export * as contactApi from "@/lib/api/contact";

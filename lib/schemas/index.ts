@@ -112,9 +112,9 @@ export const contactSchema = z.object({
   phone: z.string().min(1),
   email: z.string().email(),
   mapUrl: z.string().nullable(),
-  primaryCtaLabel: z.string().min(1),
+  primaryCtaLabel: localizedStringSchema,
   primaryCtaHref: z.string().min(1),
-  secondaryCtaLabel: z.string().min(1),
+  secondaryCtaLabel: localizedStringSchema,
   secondaryCtaHref: z.string().min(1),
 });
 

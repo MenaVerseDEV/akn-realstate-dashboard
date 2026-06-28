@@ -4,12 +4,14 @@ import * as aspirationsApi from "@/lib/api/aspirations";
 import * as valuesApi from "@/lib/api/values";
 import * as featuresApi from "@/lib/api/features";
 import * as partnersApi from "@/lib/api/partners";
+import * as contactApi from "@/lib/api/contact";
 import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
   About,
   AboutFormValues,
   Contact,
+  ContactFormValues,
   Feature,
   Footer,
   Hero,
@@ -101,11 +103,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       providesTags: ["Partners"],
     }),
     getContact: builder.query<Contact, void>({
-      queryFn: () => wrapQueryFn(api.getContact()),
+      queryFn: () => wrapQueryFn(contactApi.getContact()),
       providesTags: ["Contact"],
     }),
-    updateContact: builder.mutation<Contact, Partial<Contact>>({
-      queryFn: (body) => wrapQueryFn(api.updateContact(body)),
+    updateContact: builder.mutation<Contact, ContactFormValues>({
+      queryFn: (body) => wrapQueryFn(contactApi.updateContact(body)),
       invalidatesTags: ["Contact"],
     }),
     getMedia: builder.query<

@@ -466,6 +466,19 @@ Field mapping: `logoUrl` / `logoPath` → dashboard `logoUrl` (prefer CDN URL). 
 
 RTK: `usePartners()` / `useGetPartnerByIdQuery` → tag `Partners`. Client: [`lib/api/partners.ts`](lib/api/partners.ts). Admin UI: `/admin/partners`.
 
+### Home contact us section (real API, direct client + RTK)
+
+Production path: `/api/v1/home/contact-us-section` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/contact-us-section` | — |
+| PUT | `/home/contact-us-section` | JSON: `subtitle`, `title`, `description`, `phone`, `email`, `mapLink`, `primaryCtaLabel`, `primaryCtaLink`, `secondaryCtaLabel`, `secondaryCtaLink` |
+
+Field mapping: `subtitle` ↔ `badge`, `mapLink` ↔ `mapUrl`, `primaryCtaLink` ↔ `primaryCtaHref`, `secondaryCtaLink` ↔ `secondaryCtaHref`. CTA labels are bilingual `LocalizedString`.
+
+RTK: `useContact()` / `useUpdateContact()` → tag `Contact`. Client: [`lib/api/contact.ts`](lib/api/contact.ts). Admin UI: `/admin/contact`.
+
 ### Projects (real API, direct client + RTK)
 
 Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
