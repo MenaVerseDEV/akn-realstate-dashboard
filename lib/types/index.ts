@@ -390,6 +390,29 @@ export type Feature = {
   updatedAt: string;
 };
 
+export type FeatureApi = {
+  id: string;
+  order: number;
+  title: LocalizedString | string;
+  description: LocalizedString | string;
+  icon: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FeatureFormValues = {
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+};
+
+export type FeatureInput = {
+  order?: number;
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+};
+
 export type Partner = {
   id: string;
   name: LocalizedString;

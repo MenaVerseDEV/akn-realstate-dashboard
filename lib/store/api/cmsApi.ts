@@ -2,6 +2,7 @@ import { getApiClient } from "@/lib/api";
 import * as aboutApi from "@/lib/api/about";
 import * as aspirationsApi from "@/lib/api/aspirations";
 import * as valuesApi from "@/lib/api/values";
+import * as featuresApi from "@/lib/api/features";
 import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
@@ -83,7 +84,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       providesTags: ["Values"],
     }),
     getFeatures: builder.query<Feature[], void>({
-      queryFn: () => wrapQueryFn(api.getFeatures()),
+      queryFn: () => wrapQueryFn(featuresApi.list()),
+      providesTags: ["Features"],
+    }),
+    getFeatureById: builder.query<Feature, string>({
+      queryFn: (id) => wrapQueryFn(featuresApi.getById(id)),
       providesTags: ["Features"],
     }),
     getPartners: builder.query<Partner[], void>({
@@ -123,6 +128,7 @@ export const {
   useGetValuesQuery,
   useGetValueByIdQuery,
   useGetFeaturesQuery,
+  useGetFeatureByIdQuery,
   useGetPartnersQuery,
   useGetContactQuery,
   useUpdateContactMutation,

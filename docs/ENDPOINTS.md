@@ -432,6 +432,23 @@ Field mapping: `colorGradient` ↔ dashboard `color`. List merge via dual `Accep
 
 RTK: `useValues()` / `useGetValueByIdQuery` → tag `Values`. Client: [`lib/api/values.ts`](lib/api/values.ts). Admin UI: `/admin/values`.
 
+### Home features (real API, direct client + RTK)
+
+Production path: `/api/v1/home/features` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/features` | — (`Accept-Language: ar` / `en`) |
+| GET | `/home/features/:id` | — |
+| POST | `/home/features` | `{ order?, title, description, icon }` |
+| PATCH | `/home/features/:id` | same fields |
+| DELETE | `/home/features/:id` | — |
+| PUT | `/home/features/reorder` | `{ ids: string[] }` |
+
+List merge via dual `Accept-Language` fetches. No field renaming (1:1 with dashboard `Feature`).
+
+RTK: `useFeatures()` / `useGetFeatureByIdQuery` → tag `Features`. Client: [`lib/api/features.ts`](lib/api/features.ts). Admin UI: `/admin/features`.
+
 ### Projects (real API, direct client + RTK)
 
 Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.

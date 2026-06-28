@@ -42,6 +42,7 @@ export {
   useGetValuesQuery,
   useGetValueByIdQuery,
   useGetFeaturesQuery,
+  useGetFeatureByIdQuery,
   useGetPartnersQuery,
   useGetContactQuery,
   useUpdateContactMutation,
