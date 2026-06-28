@@ -1,15 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CollectionEditor } from "@/components/cms/CollectionEditor";
-import { CollectionForm } from "@/components/cms/CollectionForm";
-import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -17,142 +14,178 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { api, useProjects } from "@/lib/hooks/use-cms";
+import { CollectionEditor } from "@/components/cms/CollectionEditor";
+import * as projectsApi from "@/lib/api/projects";
+import { useProjects } from "@/lib/hooks/use-cms";
 import { tags } from "@/lib/store";
-import { projectSchema } from "@/lib/schemas";
-import { ltrInputClass } from "@/lib/i18n";
-import type { Project } from "@/lib/types";
-import type { z } from "zod";
+import type { Project, ProjectStatus, ProjectsListParams } from "@/lib/types";
+import { ProjectForm } from "./ProjectForm";
 
-type FormValues = z.infer<typeof projectSchema>;
-
-const defaults: FormValues = {
-  slug: "",
-  name: { ar: "" },
-  description: { ar: "" },
-  status: "planning",
-  published: false,
+const statusLabels: Record<ProjectStatus, string> = {
+  planning: "تخطيط",
+  in_progress: "قيد التنفيذ",
+  completed: "مكتمل",
+  in_hold: "متوقف",
 };
 
-const statusLabels = {
-  planning: "تخطيط",
-  construction: "قيد الإنشاء",
-  completed: "مكتمل",
+const defaultParams: ProjectsListParams = {
+  page: 1,
+  limit: 10,
 };
 
 export default function ProjectsPage() {
-  const { data: items = [], isLoading } = useProjects();
+  const [params, setParams] = useState<ProjectsListParams>(defaultParams);
+  const [searchInput, setSearchInput] = useState("");
+
+  const { data, isLoading } = useProjects(params);
+  const items = data?.items ?? [];
+  const meta = data?.meta;
+
+  const applySearch = () => {
+    setParams((prev) => ({ ...prev, page: 1, search: searchInput.trim() || undefined }));
+  };
 
   return (
-    <CollectionEditor<Project>
-      title="المشاريع"
-      items={items}
-      isLoading={isLoading}
-      invalidateTags={tags.projects}
-      addLabel="إضافة مشروع"
-      getLabel={(item) => item.name.ar}
-      columns={[
-        { key: "slug", header: "المعرّف", render: (i) => i.slug },
-        { key: "name", header: "الاسم", render: (i) => i.name.ar },
-        {
-          key: "status",
-          header: "الحالة",
-          render: (i) => (
-            <Badge variant="outline">{statusLabels[i.status]}</Badge>
-          ),
-        },
-        {
-          key: "published",
-          header: "منشور",
-          render: (i) => (i.published ? "نعم" : "لا"),
-        },
-        {
-          key: "media",
-          header: "الوسائط",
-          render: (i) => i.media.length,
-        },
-        {
-          key: "detail",
-          header: "التفاصيل",
-          render: (i) => (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href={`/admin/projects/${i.id}`}>
-                <Icon icon="solar:gallery-bold" width={16} />
-                إدارة
-              </Link>
-            </Button>
-          ),
-        },
-      ]}
-      onDelete={(id) => api.deleteProject(id)}
-      renderForm={(item, onClose) => (
-        <CollectionForm
-          schema={projectSchema}
-          defaultValues={defaults}
-          item={
-            item
-              ? {
-                  slug: item.slug,
-                  name: item.name,
-                  description: item.description,
-                  status: item.status,
-                  published: item.published,
-                }
-              : null
-          }
-          invalidateTags={tags.projects}
-          onClose={onClose}
-          onSubmit={async (values) => {
-            if (item) await api.updateProject(item.id, values);
-            else await api.createProject(values);
-          }}
-        >
-          {(form) => (
-            <>
-              <div className="space-y-2">
-                <Label>المعرّف (slug)</Label>
-                <Input {...form.register("slug")} dir="ltr" className={ltrInputClass} placeholder="101" />
-              </div>
-              <LocalizedInput label="الاسم" value={form.watch("name")} onChange={(v) => form.setValue("name", v)} />
-              <LocalizedInput label="الوصف" value={form.watch("description")} onChange={(v) => form.setValue("description", v)} multiline />
-              <div className="space-y-2">
-                <Label>الحالة</Label>
-                <Select
-                  value={form.watch("status")}
-                  onValueChange={(v) => form.setValue("status", v as FormValues["status"])}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="planning">تخطيط</SelectItem>
-                    <SelectItem value="construction">قيد الإنشاء</SelectItem>
-                    <SelectItem value="completed">مكتمل</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between rounded-none border border-border bg-bg p-4">
-                <Label htmlFor="project-published" className="font-medium">
-                  منشور على الموقع
-                </Label>
-                <Switch
-                  id="project-published"
-                  checked={form.watch("published")}
-                  onCheckedChange={(v) => form.setValue("published", v)}
-                />
-              </div>
-              {item ? (
-                <Button variant="outline" className="w-full" asChild>
-                  <Link href={`/admin/projects/${item.id}`}>
-                    <Icon icon="solar:gallery-bold" width={16} />
-                    إدارة معرض الوسائط
-                  </Link>
-                </Button>
-              ) : null}
-            </>
-          )}
-        </CollectionForm>
-      )}
-    />
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 border border-border bg-bg-card p-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="space-y-2 sm:col-span-2">
+            <Label>بحث</Label>
+            <div className="flex gap-2">
+              <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && applySearch()}
+                placeholder="ابحث عن مشروع..."
+              />
+              <Button type="button" variant="outline" onClick={applySearch}>
+                بحث
+              </Button>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>الحالة</Label>
+            <Select
+              value={params.status ?? "all"}
+              onValueChange={(v) =>
+                setParams((prev) => ({
+                  ...prev,
+                  page: 1,
+                  status: v === "all" ? "" : (v as ProjectStatus),
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">الكل</SelectItem>
+                <SelectItem value="planning">تخطيط</SelectItem>
+                <SelectItem value="in_progress">قيد التنفيذ</SelectItem>
+                <SelectItem value="completed">مكتمل</SelectItem>
+                <SelectItem value="in_hold">متوقف</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>النشر</Label>
+            <Select
+              value={
+                params.isPublished === undefined
+                  ? "all"
+                  : params.isPublished
+                    ? "published"
+                    : "unpublished"
+              }
+              onValueChange={(v) =>
+                setParams((prev) => ({
+                  ...prev,
+                  page: 1,
+                  isPublished: v === "all" ? undefined : v === "published",
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">الكل</SelectItem>
+                <SelectItem value="published">منشور</SelectItem>
+                <SelectItem value="unpublished">غير منشور</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {meta ? (
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-muted-foreground">
+              صفحة {meta.page} من {meta.totalPages} — {meta.total} مشروع
+            </p>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!meta.hasPrev}
+                onClick={() => setParams((prev) => ({ ...prev, page: (prev.page ?? 1) - 1 }))}
+              >
+                السابق
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!meta.hasNext}
+                onClick={() => setParams((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }))}
+              >
+                التالي
+              </Button>
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      <CollectionEditor<Project>
+        title="المشاريع"
+        items={items}
+        isLoading={isLoading}
+        invalidateTags={tags.projects}
+        addLabel="إضافة مشروع"
+        getLabel={(item) => item.name.ar}
+        columns={[
+          { key: "slug", header: "المعرّف", render: (i) => i.slug },
+          { key: "name", header: "الاسم", render: (i) => i.name.ar },
+          {
+            key: "status",
+            header: "الحالة",
+            render: (i) => <Badge variant="outline">{statusLabels[i.status]}</Badge>,
+          },
+          {
+            key: "published",
+            header: "منشور",
+            render: (i) => (i.published ? "نعم" : "لا"),
+          },
+          {
+            key: "media",
+            header: "الوسائط",
+            render: (i) => i.media.length,
+          },
+          {
+            key: "detail",
+            header: "التفاصيل",
+            render: (i) => (
+              <Button variant="ghost" size="sm" asChild>
+                <Link href={`/admin/projects/${i.id}`}>
+                  <Icon icon="solar:gallery-bold" width={16} />
+                  إدارة
+                </Link>
+              </Button>
+            ),
+          },
+        ]}
+        onDelete={(id) => projectsApi.deleteProject(id)}
+        renderForm={(item, onClose) => <ProjectForm item={item} onClose={onClose} />}
+      />
+    </div>
   );
 }

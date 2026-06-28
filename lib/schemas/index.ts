@@ -62,7 +62,7 @@ export const projectSchema = z.object({
   slug: z.string().min(1),
   name: localizedStringSchema,
   description: localizedStringSchema,
-  status: z.enum(["planning", "construction", "completed"]),
+  status: z.enum(["planning", "in_progress", "completed", "in_hold"]),
   published: z.boolean(),
 });
 

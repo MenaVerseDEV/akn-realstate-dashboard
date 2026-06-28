@@ -199,7 +199,7 @@ export type AboutFormValues = {
   cards: AboutCard[];
 };
 
-export type ProjectStatus = "planning" | "construction" | "completed";
+export type ProjectStatus = "planning" | "in_progress" | "completed" | "in_hold";
 
 export type ProjectMedia = {
   id: string;
@@ -219,6 +219,61 @@ export type Project = {
   media: ProjectMedia[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type ProjectApi = {
+  id: string;
+  slug: string;
+  name: LocalizedString | string;
+  description: LocalizedString | string;
+  status: ProjectStatus;
+  isPublished: boolean;
+  media: ProjectMedia[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProjectFormValues = {
+  slug: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  status: ProjectStatus;
+  published: boolean;
+};
+
+export type ProjectInput = {
+  slug: string;
+  name: LocalizedString;
+  description: LocalizedString;
+  status: ProjectStatus;
+  isPublished: boolean;
+};
+
+export type ProjectsListParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: ProjectStatus | "";
+  isPublished?: boolean;
+};
+
+export type ProjectsListMeta = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+};
+
+export type ProjectsListResult = {
+  items: Project[];
+  meta: ProjectsListMeta;
+};
+
+export type ProjectsListApiResponse = {
+  items: ProjectApi[];
+  meta: ProjectsListMeta;
 };
 
 export type Milestone = {

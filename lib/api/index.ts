@@ -9,3 +9,4 @@ export * as footerSocialLinksApi from "@/lib/api/footer-social-links";
 export * as heroApi from "@/lib/api/hero";
 export * as aboutApi from "@/lib/api/about";
 export * as aspirationsApi from "@/lib/api/aspirations";
+export * as projectsApi from "@/lib/api/projects";

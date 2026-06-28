@@ -1,6 +1,7 @@
 import { getApiClient } from "@/lib/api";
 import * as aboutApi from "@/lib/api/about";
 import * as aspirationsApi from "@/lib/api/aspirations";
+import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
   About,
@@ -15,6 +16,8 @@ import type {
   PaginatedResponse,
   Partner,
   Project,
+  ProjectsListParams,
+  ProjectsListResult,
   Value,
   VideoShowcase,
 } from "@/lib/types";
@@ -41,12 +44,12 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       queryFn: (body) => wrapQueryFn(aboutApi.updateAbout(body)),
       invalidatesTags: ["About"],
     }),
-    getProjects: builder.query<Project[], void>({
-      queryFn: () => wrapQueryFn(api.getProjects()),
+    getProjects: builder.query<ProjectsListResult, ProjectsListParams>({
+      queryFn: (params) => wrapQueryFn(projectsApi.list(params)),
       providesTags: ["Projects"],
     }),
     getProject: builder.query<Project, string>({
-      queryFn: (id) => wrapQueryFn(api.getProject(id)),
+      queryFn: (id) => wrapQueryFn(projectsApi.getById(id)),
       providesTags: (_result, _error, id) => [{ type: "Project", id }],
     }),
     getMilestones: builder.query<Milestone[], void>({

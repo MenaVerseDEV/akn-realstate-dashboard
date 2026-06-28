@@ -1,5 +1,6 @@
 "use client";
 
+import type { ProjectsListParams } from "@/lib/types";
 import {
   useGetAboutQuery,
   useGetContactQuery,
@@ -68,8 +69,8 @@ export function useAbout() {
   return useGetAboutQuery();
 }
 
-export function useProjects() {
-  return useGetProjectsQuery();
+export function useProjects(params?: ProjectsListParams) {
+  return useGetProjectsQuery(params ?? { page: 1, limit: 10 });
 }
 
 export function useProject(id: string) {

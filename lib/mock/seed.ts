@@ -94,7 +94,7 @@ export function createSeedData() {
       slug: "101",
       name: loc("مشروع أكن 101"),
       description: loc("مجمع سكني فاخر يضم وحدات متنوعة بتصاميم عصرية ومرافق متكاملة"),
-      status: "construction",
+      status: "in_progress",
       published: true,
       media: [
         { id: "pm1", url: "/images/akn/101/WhatsApp Image 2026-05-21 at 10.18.50 AM.jpeg", type: "image", caption: null, order: 0 },
@@ -107,7 +107,7 @@ export function createSeedData() {
       slug: "102",
       name: loc("مشروع أكن 102"),
       description: loc("مشروع سكني متميز بموقع استراتيجي وتشطيبات فاخرة عالية الجودة"),
-      status: "construction",
+      status: "in_progress",
       published: true,
       media: [
         { id: "pm2", url: "/images/akn/102/WhatsApp Image 2026-05-21 at 10.18.54 AM.jpeg", type: "image", caption: null, order: 0 },

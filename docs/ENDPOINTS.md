@@ -415,6 +415,27 @@ Field mapping: API `year` (number) ↔ dashboard `Milestone.year` (string in for
 
 RTK: `useMilestones()` / `useGetMilestoneByIdQuery` → tag `Milestones`. Client: [`lib/api/aspirations.ts`](lib/api/aspirations.ts). Admin UI: `/admin/milestones`.
 
+### Projects (real API, direct client + RTK)
+
+Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/projects?page&limit&search&status&isPublished` | Paginated list; dual `Accept-Language` merge |
+| GET | `/projects/:id` | Single project (dual-language for edit) |
+| GET | `/projects/slug/:slug` | Lookup by slug |
+| POST | `/projects` | Create |
+| PATCH | `/projects/:id` | Update |
+| DELETE | `/projects/:id` | Delete |
+
+List response: `{ items: [...], meta: { total, page, limit, totalPages, hasNext, hasPrev } }`. Omit `status` query param when fetching all statuses.
+
+Field mapping: `isPublished` ↔ `published`. Status enum: `planning` | `in_progress` | `completed` | `in_hold`.
+
+RTK: `useProjects(params)` / `useProject(id)` → tags `Projects` / `Project`. Client: [`lib/api/projects.ts`](lib/api/projects.ts). Admin UI: `/admin/projects`.
+
+Project media gallery (`/admin/projects/[id]`) remains on mock until media API is wired.
+
 ### Singleton sub-collections
 
 | Path | Methods |
