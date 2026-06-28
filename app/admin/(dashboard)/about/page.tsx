@@ -1,28 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@iconify/react";
 import { FormSection } from "@/components/cms/FormSection";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
-import { MediaPicker } from "@/components/cms/MediaPicker";
+import { LogoUploadField } from "@/components/cms/LogoUploadField";
 import { SingletonForm } from "@/components/cms/SingletonForm";
-import { ReorderableList } from "@/components/cms/ReorderableList";
-import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
-import { Button } from "@/components/ui/button";
-import { api, useAbout, useUpdateAbout } from "@/lib/hooks/use-cms";
-import { baseApi, tags, useAppDispatch } from "@/lib/store";
+import { CollectionEditor } from "@/components/cms/CollectionEditor";
+import { useAbout, useUpdateAbout } from "@/lib/hooks/use-cms";
+import { aboutToFormValues } from "@/lib/api/mappers/about-us-section";
+import { tags } from "@/lib/store";
+import { toDisplayIcon } from "@/lib/icons";
 import { aboutSchema } from "@/lib/schemas";
-import type { AboutCard } from "@/lib/types";
+import type { About, AboutCard, AboutFormValues } from "@/lib/types";
 import type { z } from "zod";
+import { AboutCardForm } from "./AboutCardForm";
 
 type FormValues = z.infer<typeof aboutSchema>;
+
+const defaultValues: FormValues = {
+  eyebrow: { ar: "" },
+  title: { ar: "" },
+  description: { ar: "" },
+  imageUrl: null,
+  imageFile: null,
+};
+
+function buildFormValues(about: About | undefined, cards: AboutCard[]): AboutFormValues {
+  if (!about) {
+    return { ...defaultValues, cards, imageFile: null };
+  }
+  return { ...aboutToFormValues(about), cards };
+}
 
 export default function AboutPage() {
   const { data, isLoading } = useAbout();
   const update = useUpdateAbout();
-  const dispatch = useAppDispatch();
-  const [deletingCard, setDeletingCard] = useState<AboutCard | null>(null);
+  const [cards, setCards] = useState<AboutCard[]>([]);
+
+  useEffect(() => {
+    if (data?.cards) setCards(data.cards);
+  }, [data?.cards]);
 
   const formData: FormValues | undefined = data
     ? {
@@ -30,26 +49,42 @@ export default function AboutPage() {
         title: data.title,
         description: data.description,
         imageUrl: data.imageUrl,
+        imageFile: null,
       }
     : undefined;
+
+  const persistAbout = async (partial: Partial<AboutFormValues>) => {
+    await update.mutateAsync({
+      ...buildFormValues(data, cards),
+      ...partial,
+    });
+  };
+
+  const normalizeCards = (items: AboutCard[]) =>
+    items.map((item, index) => ({ ...item, order: index }));
+
+  const handleSaveCard = async (card: AboutCard, existingId?: string) => {
+    const next = existingId
+      ? cards.map((c) => (c.id === existingId ? { ...card, order: c.order } : c))
+      : [...cards, card];
+    await persistAbout({ cards: normalizeCards(next) });
+  };
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-dark">من نحن</h2>
       <SingletonForm
         schema={aboutSchema}
-        defaultValues={{
-          eyebrow: { ar: "" },
-          title: { ar: "" },
-          description: { ar: "" },
-          imageUrl: null,
-        }}
+        defaultValues={defaultValues}
         data={formData}
         isLoading={isLoading}
         saving={update.isPending}
         onSubmit={async (values) => {
           try {
-            await update.mutateAsync(values);
+            await update.mutateAsync({
+              ...values,
+              cards,
+            });
             toast.success("تم الحفظ");
           } catch {
             toast.error("فشل الحفظ");
@@ -58,61 +93,63 @@ export default function AboutPage() {
       >
         {(form) => (
           <FormSection title="المحتوى">
-            <LocalizedInput label="العنوان الفرعي" value={form.watch("eyebrow")} onChange={(v) => form.setValue("eyebrow", v, { shouldDirty: true })} />
-            <LocalizedInput label="العنوان" value={form.watch("title")} onChange={(v) => form.setValue("title", v, { shouldDirty: true })} />
-            <LocalizedInput label="الوصف" value={form.watch("description")} onChange={(v) => form.setValue("description", v, { shouldDirty: true })} multiline />
-            <MediaPicker label="الصورة" value={form.watch("imageUrl")} onChange={(v) => form.setValue("imageUrl", v, { shouldDirty: true })} />
+            <LocalizedInput
+              label="العنوان الفرعي"
+              value={form.watch("eyebrow")}
+              onChange={(v) => form.setValue("eyebrow", v, { shouldDirty: true })}
+            />
+            <LocalizedInput
+              label="العنوان"
+              value={form.watch("title")}
+              onChange={(v) => form.setValue("title", v, { shouldDirty: true })}
+            />
+            <LocalizedInput
+              label="الوصف"
+              value={form.watch("description")}
+              onChange={(v) => form.setValue("description", v, { shouldDirty: true })}
+              multiline
+            />
+            <LogoUploadField
+              label="الصورة"
+              logoUrl={form.watch("imageUrl")}
+              logoFile={form.watch("imageFile") ?? null}
+              onLogoUrlChange={(url) => form.setValue("imageUrl", url, { shouldDirty: true })}
+              onLogoFileChange={(file) => form.setValue("imageFile", file, { shouldDirty: true })}
+            />
           </FormSection>
         )}
       </SingletonForm>
 
-      <FormSection title="البطاقات">
-        <ReorderableList
-          items={data?.cards ?? []}
-          onReorder={async (reordered) => {
-            await api.reorderAboutCards(reordered.map((c) => c.id));
-            dispatch(baseApi.util.invalidateTags(tags.about));
-            toast.success("تم تحديث الترتيب");
-          }}
-          renderItem={(card) => (
-            <div className="flex flex-1 items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Icon icon={card.icon} width={20} />
-                <span className="font-medium">{card.title.ar}</span>
-              </div>
-              <Button type="button" variant="ghost" size="icon-xs" onClick={() => setDeletingCard(card)}>
-                <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
-              </Button>
-            </div>
-          )}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={async () => {
-            await api.createAboutCard({
-              title: { ar: "بطاقة جديدة" },
-              description: { ar: "وصف البطاقة" },
-              icon: "solar:star-bold",
-            });
-            dispatch(baseApi.util.invalidateTags(tags.about));
-            toast.success("تمت الإضافة");
-          }}
-        >
-          إضافة بطاقة
-        </Button>
-      </FormSection>
-
-      <ConfirmDeleteDialog
-        open={!!deletingCard}
-        onOpenChange={(open) => !open && setDeletingCard(null)}
-        onConfirm={async () => {
-          if (!deletingCard) return;
-          await api.deleteAboutCard(deletingCard.id);
-          dispatch(baseApi.util.invalidateTags(tags.about));
-          setDeletingCard(null);
-          toast.success("تم الحذف");
+      <CollectionEditor
+        title="البطاقات"
+        items={cards}
+        isLoading={isLoading}
+        invalidateTags={tags.about}
+        addLabel="إضافة بطاقة"
+        reorderable
+        getLabel={(item) => item.title.ar}
+        columns={[
+          {
+            key: "icon",
+            header: "الأيقونة",
+            render: (i) => <Icon icon={toDisplayIcon(i.icon)} width={18} />,
+          },
+          { key: "title", header: "العنوان", render: (i) => i.title.ar },
+        ]}
+        onDelete={async (id) => {
+          const next = normalizeCards(cards.filter((c) => c.id !== id));
+          await persistAbout({ cards: next });
         }}
+        onReorder={async (ids) => {
+          const byId = new Map(cards.map((c) => [c.id, c]));
+          const reordered = ids
+            .map((id) => byId.get(id))
+            .filter((c): c is AboutCard => Boolean(c));
+          await persistAbout({ cards: normalizeCards(reordered) });
+        }}
+        renderForm={(item, onClose) => (
+          <AboutCardForm item={item} onClose={onClose} onSave={handleSaveCard} />
+        )}
       />
     </div>
   );

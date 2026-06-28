@@ -287,6 +287,134 @@ Field mapping: `platformName→platform`, `link→url`, `icon` slug → iconify 
 
 RTK: `useFooterSocialLinks()` → tag `FooterSocialLinks`.
 
+### Home hero section (real API, direct client + RTK)
+
+Production path: `GET/PUT /api/v1/home/hero-section` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+```http
+GET /api/v1/home/hero-section
+
+200 OK
+{
+  "success": true,
+  "data": {
+    "subtitle": { "ar": "...", "en": "..." },
+    "title": { "ar": "...", "en": "..." },
+    "description": { "ar": "...", "en": "..." },
+    "backgroundImageUrl": "https://...",
+    "primaryButtonLabel": { "ar": "...", "en": "..." },
+    "primaryButtonLink": "#about",
+    "secondaryButtonLabel": { "ar": "...", "en": "..." },
+    "secondaryButtonLink": "#contact",
+    "analysis": [
+      {
+        "order": 1,
+        "icon": "users",
+        "value": "120+",
+        "label": { "ar": "عميل", "en": "Clients" }
+      }
+    ],
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
+```
+
+```http
+PUT /api/v1/home/hero-section
+Content-Type: multipart/form-data
+
+subtitle={"ar":"...","en":"..."}
+title={"ar":"...","en":"..."}
+description={"ar":"...","en":"..."}
+primaryButtonLabel={"ar":"...","en":"..."}
+secondaryButtonLabel={"ar":"...","en":"..."}
+primaryButtonLink=#about
+secondaryButtonLink=#contact
+analysis=[{"order":1,"icon":"users","value":"120+","label":{"ar":"عميل"}}]
+backgroundImage=@hero-bg.webp
+```
+
+Field mapping:
+
+| API | Dashboard |
+|-----|-----------|
+| `subtitle` | `badge` |
+| `backgroundImage` / `backgroundImageUrl` | `backgroundMediaUrl` + `backgroundImageFile` |
+| `primaryButtonLabel`, `primaryButtonLink` | `primaryCtaLabel`, `primaryCtaHref` |
+| `secondaryButtonLabel`, `secondaryButtonLink` | `secondaryCtaLabel`, `secondaryCtaHref` |
+| `analysis[]` | `stats[]` — `value` string split into `value` + `suffix`; `icon` slug ↔ iconify |
+
+RTK: `useHero()` / `useUpdateHero()` → tag `Hero`. Client: [`lib/api/hero.ts`](lib/api/hero.ts).
+
+### Home about us section (real API, direct client + RTK)
+
+Production path: `GET/PUT /api/v1/home/about-us-section` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+```http
+GET /api/v1/home/about-us-section
+
+200 OK
+{
+  "success": true,
+  "data": {
+    "subtitle": { "ar": "من نحن", "en": "About us" },
+    "title": { "ar": "...", "en": "..." },
+    "description": { "ar": "...", "en": "..." },
+    "imageUrl": null,
+    "cards": [
+      {
+        "order": 1,
+        "icon": "target",
+        "title": { "ar": "تنفيذ مركز", "en": "Focused execution" }
+      }
+    ],
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+}
+```
+
+```http
+PUT /api/v1/home/about-us-section
+Content-Type: multipart/form-data
+
+subtitle={"ar":"من نحن","en":"About us"}
+title={"ar":"...","en":"..."}
+description={"ar":"...","en":"..."}
+cards=[{"order":1,"icon":"target","title":{"ar":"تنفيذ مركز","en":"Focused execution"}}]
+image=@about.webp
+```
+
+Field mapping:
+
+| API | Dashboard |
+|-----|-----------|
+| `subtitle` | `eyebrow` |
+| `image` / `imageUrl` / `imagePath` | `imageUrl` + `imageFile` |
+| `cards[]` | `cards[]` — `icon` slug ↔ iconify; cards have `title` only (no `description`) |
+
+RTK: `useAbout()` / `useUpdateAbout()` → tag `About`. Client: [`lib/api/about.ts`](lib/api/about.ts).
+
+### Home aspirations (real API, direct client + RTK)
+
+Production path: `/api/v1/home/aspirations` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/aspirations` | — (`Accept-Language: ar` / `en`) |
+| GET | `/home/aspirations/:id` | — (dual-language for edit hydration) |
+| POST | `/home/aspirations` | `{ year, order?, title, description, icon }` |
+| PATCH | `/home/aspirations/:id` | same fields |
+| DELETE | `/home/aspirations/:id` | — |
+| PUT | `/home/aspirations/reorder` | `{ ids: string[] }` |
+
+List responses return flat `title` / `description` strings per `Accept-Language`. POST/PATCH accept full `{ ar, en }` objects. Dashboard merges ar + en fetches (same pattern as footer services).
+
+Field mapping: API `year` (number) ↔ dashboard `Milestone.year` (string in form). `icon` is stored as full iconify string (e.g. `solar:flag-bold-duotone`).
+
+RTK: `useMilestones()` / `useGetMilestoneByIdQuery` → tag `Milestones`. Client: [`lib/api/aspirations.ts`](lib/api/aspirations.ts). Admin UI: `/admin/milestones`.
+
 ### Singleton sub-collections
 
 | Path | Methods |

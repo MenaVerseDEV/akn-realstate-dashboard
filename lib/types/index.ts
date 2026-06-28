@@ -105,14 +105,36 @@ export type HeroStat = {
   order: number;
 };
 
+export type HeroAnalysisApi = {
+  order: number;
+  icon: string;
+  value: string;
+  label: LocalizedString;
+};
+
+export type HeroSectionApi = {
+  subtitle: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  backgroundImagePath?: string | null;
+  backgroundImageUrl?: string | null;
+  primaryButtonLink: string;
+  primaryButtonLabel: LocalizedString;
+  secondaryButtonLink: string;
+  secondaryButtonLabel: LocalizedString;
+  analysis: HeroAnalysisApi[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Hero = {
   id: string;
   badge: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
-  primaryCtaLabel: string;
+  primaryCtaLabel: LocalizedString;
   primaryCtaHref: string;
-  secondaryCtaLabel: string;
+  secondaryCtaLabel: LocalizedString;
   secondaryCtaHref: string;
   backgroundMediaUrl: string | null;
   stats: HeroStat[];
@@ -120,12 +142,41 @@ export type Hero = {
   updatedAt: string;
 };
 
+export type HeroFormValues = {
+  badge: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  primaryCtaLabel: LocalizedString;
+  primaryCtaHref: string;
+  secondaryCtaLabel: LocalizedString;
+  secondaryCtaHref: string;
+  backgroundMediaUrl: string | null;
+  backgroundImageFile?: File | null;
+  stats: HeroStat[];
+};
+
 export type AboutCard = {
   id: string;
   title: LocalizedString;
-  description: LocalizedString;
   icon: string;
   order: number;
+};
+
+export type AboutCardApi = {
+  order: number;
+  icon: string;
+  title: LocalizedString;
+};
+
+export type AboutUsSectionApi = {
+  subtitle: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  imagePath?: string | null;
+  imageUrl?: string | null;
+  cards: AboutCardApi[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type About = {
@@ -137,6 +188,15 @@ export type About = {
   cards: AboutCard[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type AboutFormValues = {
+  eyebrow: LocalizedString;
+  title: LocalizedString;
+  description: LocalizedString;
+  imageUrl: string | null;
+  imageFile?: File | null;
+  cards: AboutCard[];
 };
 
 export type ProjectStatus = "planning" | "construction" | "completed";
@@ -170,6 +230,32 @@ export type Milestone = {
   order: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type AspirationApi = {
+  id: string;
+  year: number;
+  order: number;
+  title: LocalizedString | string;
+  description: LocalizedString | string;
+  icon: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MilestoneFormValues = {
+  year: string;
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+};
+
+export type AspirationInput = {
+  year: number;
+  order?: number;
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
 };
 
 export type VideoShowcase = {

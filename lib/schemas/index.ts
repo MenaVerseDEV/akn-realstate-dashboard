@@ -37,16 +37,16 @@ export const heroSchema = z.object({
   badge: localizedStringSchema,
   title: localizedStringSchema,
   description: localizedStringSchema,
-  primaryCtaLabel: z.string().min(1),
+  primaryCtaLabel: localizedStringSchema,
   primaryCtaHref: z.string().min(1),
-  secondaryCtaLabel: z.string().min(1),
+  secondaryCtaLabel: localizedStringSchema,
   secondaryCtaHref: z.string().min(1),
   backgroundMediaUrl: z.string().nullable(),
+  backgroundImageFile: z.custom<File | null>().nullable().optional(),
 });
 
 export const aboutCardSchema = z.object({
   title: localizedStringSchema,
-  description: localizedStringSchema,
   icon: z.string().min(1),
 });
 
@@ -55,6 +55,7 @@ export const aboutSchema = z.object({
   title: localizedStringSchema,
   description: localizedStringSchema,
   imageUrl: z.string().nullable(),
+  imageFile: z.custom<File | null>().nullable().optional(),
 });
 
 export const projectSchema = z.object({

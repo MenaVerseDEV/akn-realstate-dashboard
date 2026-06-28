@@ -48,9 +48,9 @@ export function createSeedData() {
     description: loc(
       "نفخر في أكن العقارية بتقديم وحدات سكنية تجمع بين الأصالة والمعاصرة في أرقى أحياء الرياض، حيث تلتقي الجودة بالفخامة لتصنع لك حياة استثنائية.",
     ),
-    primaryCtaLabel: "اكتشف عالمنا",
+    primaryCtaLabel: loc("اكتشف عالمنا"),
     primaryCtaHref: "#about",
-    secondaryCtaLabel: "تواصل معنا",
+    secondaryCtaLabel: loc("تواصل معنا"),
     secondaryCtaHref: "#contact",
     backgroundMediaUrl: null,
     stats: [
@@ -74,14 +74,12 @@ export function createSeedData() {
       {
         id: "ac1",
         title: loc("رؤيتنا"),
-        description: loc("أن نكون الخيار الأول في التطوير العقاري السكني بالمملكة العربية السعودية."),
         icon: "solar:eye-bold",
         order: 0,
       },
       {
         id: "ac2",
         title: loc("رسالتنا"),
-        description: loc("نلتزم بتقديم وحدات سكنية استثنائية تجمع بين الابتكار المعماري وأعلى معايير الجودة."),
         icon: "solar:flag-2-bold",
         order: 1,
       },

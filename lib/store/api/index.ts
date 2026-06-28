@@ -35,6 +35,7 @@ export {
   useGetProjectsQuery,
   useGetProjectQuery,
   useGetMilestonesQuery,
+  useGetMilestoneByIdQuery,
   useGetVideoQuery,
   useUpdateVideoMutation,
   useGetValuesQuery,

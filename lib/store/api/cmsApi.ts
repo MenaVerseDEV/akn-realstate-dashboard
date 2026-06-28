@@ -1,10 +1,15 @@
 import { getApiClient } from "@/lib/api";
+import * as aboutApi from "@/lib/api/about";
+import * as aspirationsApi from "@/lib/api/aspirations";
+import * as heroApi from "@/lib/api/hero";
 import type {
   About,
+  AboutFormValues,
   Contact,
   Feature,
   Footer,
   Hero,
+  HeroFormValues,
   MediaAsset,
   Milestone,
   PaginatedResponse,
@@ -21,19 +26,19 @@ const api = getApiClient();
 export const cmsEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getHero: builder.query<Hero, void>({
-      queryFn: () => wrapQueryFn(api.getHero()),
+      queryFn: () => wrapQueryFn(heroApi.getHero()),
       providesTags: ["Hero"],
     }),
-    updateHero: builder.mutation<Hero, Partial<Hero>>({
-      queryFn: (body) => wrapQueryFn(api.updateHero(body)),
+    updateHero: builder.mutation<Hero, HeroFormValues>({
+      queryFn: (body) => wrapQueryFn(heroApi.updateHero(body)),
       invalidatesTags: ["Hero"],
     }),
     getAbout: builder.query<About, void>({
-      queryFn: () => wrapQueryFn(api.getAbout()),
+      queryFn: () => wrapQueryFn(aboutApi.getAbout()),
       providesTags: ["About"],
     }),
-    updateAbout: builder.mutation<About, Partial<About>>({
-      queryFn: (body) => wrapQueryFn(api.updateAbout(body)),
+    updateAbout: builder.mutation<About, AboutFormValues>({
+      queryFn: (body) => wrapQueryFn(aboutApi.updateAbout(body)),
       invalidatesTags: ["About"],
     }),
     getProjects: builder.query<Project[], void>({
@@ -45,7 +50,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       providesTags: (_result, _error, id) => [{ type: "Project", id }],
     }),
     getMilestones: builder.query<Milestone[], void>({
-      queryFn: () => wrapQueryFn(api.getMilestones()),
+      queryFn: () => wrapQueryFn(aspirationsApi.list()),
+      providesTags: ["Milestones"],
+    }),
+    getMilestoneById: builder.query<Milestone, string>({
+      queryFn: (id) => wrapQueryFn(aspirationsApi.getById(id)),
       providesTags: ["Milestones"],
     }),
     getVideo: builder.query<VideoShowcase, void>({
@@ -94,6 +103,7 @@ export const {
   useGetProjectsQuery,
   useGetProjectQuery,
   useGetMilestonesQuery,
+  useGetMilestoneByIdQuery,
   useGetVideoQuery,
   useUpdateVideoMutation,
   useGetValuesQuery,

@@ -6,3 +6,6 @@ export * as navApi from "@/lib/api/nav";
 export * as footerApi from "@/lib/api/footer";
 export * as footerServicesApi from "@/lib/api/footer-services";
 export * as footerSocialLinksApi from "@/lib/api/footer-social-links";
+export * as heroApi from "@/lib/api/hero";
+export * as aboutApi from "@/lib/api/about";
+export * as aspirationsApi from "@/lib/api/aspirations";
