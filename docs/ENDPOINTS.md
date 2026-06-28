@@ -449,6 +449,23 @@ List merge via dual `Accept-Language` fetches. No field renaming (1:1 with dashb
 
 RTK: `useFeatures()` / `useGetFeatureByIdQuery` → tag `Features`. Client: [`lib/api/features.ts`](lib/api/features.ts). Admin UI: `/admin/features`.
 
+### Home partners (real API, direct client + RTK)
+
+Production path: `/api/v1/home/partners` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/partners` | — (`Accept-Language: ar` / `en`) |
+| GET | `/home/partners/:id` | — |
+| POST | `/home/partners` | `multipart`: `order?`, `name` (JSON string), `logo` (file) |
+| PATCH | `/home/partners/:id` | same fields; `logo` optional |
+| DELETE | `/home/partners/:id` | — |
+| PUT | `/home/partners/reorder` | `{ ids: string[] }` |
+
+Field mapping: `logoUrl` / `logoPath` → dashboard `logoUrl` (prefer CDN URL). List merge via dual `Accept-Language` fetches.
+
+RTK: `usePartners()` / `useGetPartnerByIdQuery` → tag `Partners`. Client: [`lib/api/partners.ts`](lib/api/partners.ts). Admin UI: `/admin/partners`.
+
 ### Projects (real API, direct client + RTK)
 
 Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.

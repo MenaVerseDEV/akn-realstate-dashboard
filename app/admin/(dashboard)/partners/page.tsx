@@ -1,21 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { CollectionEditor } from "@/components/cms/CollectionEditor";
-import { CollectionForm } from "@/components/cms/CollectionForm";
-import { LocalizedInput } from "@/components/cms/LocalizedInput";
-import { MediaPicker } from "@/components/cms/MediaPicker";
-import { api, usePartners } from "@/lib/hooks/use-cms";
+import * as partnersApi from "@/lib/api/partners";
+import { usePartners } from "@/lib/hooks/use-cms";
 import { tags } from "@/lib/store";
-import { partnerSchema } from "@/lib/schemas";
 import type { Partner } from "@/lib/types";
-import type { z } from "zod";
-
-type FormValues = z.infer<typeof partnerSchema>;
-
-const defaults: FormValues = {
-  name: { ar: "" },
-  logoUrl: null,
-};
+import { PartnerForm } from "./PartnerForm";
 
 export default function PartnersPage() {
   const { data: items = [], isLoading } = usePartners();
@@ -29,28 +20,30 @@ export default function PartnersPage() {
       addLabel="إضافة شريك"
       reorderable
       getLabel={(item) => item.name.ar}
-      columns={[{ key: "name", header: "الاسم", render: (i) => i.name.ar }]}
-      onDelete={(id) => api.deletePartner(id)}
-      onReorder={(ids) => api.reorderPartners(ids)}
+      columns={[
+        {
+          key: "logo",
+          header: "الشعار",
+          render: (i) =>
+            i.logoUrl ? (
+              <Image
+                src={i.logoUrl}
+                alt=""
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain"
+                unoptimized
+              />
+            ) : (
+              "—"
+            ),
+        },
+        { key: "name", header: "الاسم", render: (i) => i.name.ar },
+      ]}
+      onDelete={(id) => partnersApi.deletePartner(id)}
+      onReorder={(ids) => partnersApi.reorder(ids)}
       renderForm={(item, onClose) => (
-        <CollectionForm
-          schema={partnerSchema}
-          defaultValues={defaults}
-          item={item ? { name: item.name, logoUrl: item.logoUrl } : null}
-          invalidateTags={tags.partners}
-          onClose={onClose}
-          onSubmit={async (values) => {
-            if (item) await api.updatePartner(item.id, values);
-            else await api.createPartner(values);
-          }}
-        >
-          {(form) => (
-            <>
-              <LocalizedInput label="الاسم" value={form.watch("name")} onChange={(v) => form.setValue("name", v)} />
-              <MediaPicker label="الشعار" value={form.watch("logoUrl")} onChange={(v) => form.setValue("logoUrl", v)} />
-            </>
-          )}
-        </CollectionForm>
+        <PartnerForm item={item} onClose={onClose} itemCount={items.length} />
       )}
     />
   );

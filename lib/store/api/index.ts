@@ -44,6 +44,7 @@ export {
   useGetFeaturesQuery,
   useGetFeatureByIdQuery,
   useGetPartnersQuery,
+  useGetPartnerByIdQuery,
   useGetContactQuery,
   useUpdateContactMutation,
   useGetMediaQuery,

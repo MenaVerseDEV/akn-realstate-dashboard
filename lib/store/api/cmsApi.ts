@@ -3,6 +3,7 @@ import * as aboutApi from "@/lib/api/about";
 import * as aspirationsApi from "@/lib/api/aspirations";
 import * as valuesApi from "@/lib/api/values";
 import * as featuresApi from "@/lib/api/features";
+import * as partnersApi from "@/lib/api/partners";
 import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
@@ -92,7 +93,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       providesTags: ["Features"],
     }),
     getPartners: builder.query<Partner[], void>({
-      queryFn: () => wrapQueryFn(api.getPartners()),
+      queryFn: () => wrapQueryFn(partnersApi.list()),
+      providesTags: ["Partners"],
+    }),
+    getPartnerById: builder.query<Partner, string>({
+      queryFn: (id) => wrapQueryFn(partnersApi.getById(id)),
       providesTags: ["Partners"],
     }),
     getContact: builder.query<Contact, void>({
@@ -130,6 +135,7 @@ export const {
   useGetFeaturesQuery,
   useGetFeatureByIdQuery,
   useGetPartnersQuery,
+  useGetPartnerByIdQuery,
   useGetContactQuery,
   useUpdateContactMutation,
   useGetMediaQuery,

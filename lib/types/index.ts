@@ -422,6 +422,28 @@ export type Partner = {
   updatedAt: string;
 };
 
+export type PartnerApi = {
+  id: string;
+  order: number;
+  name: LocalizedString | string;
+  logoPath?: string | null;
+  logoUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PartnerFormValues = {
+  name: LocalizedString;
+  logoUrl: string | null;
+  logoFile?: File | null;
+};
+
+export type PartnerInput = {
+  order?: number;
+  name: LocalizedString;
+  logoFile?: File | null;
+};
+
 export type Contact = {
   id: string;
   badge: LocalizedString;

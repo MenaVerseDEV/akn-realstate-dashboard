@@ -93,10 +93,17 @@ export const featureSchema = z.object({
   icon: z.string().min(1),
 });
 
-export const partnerSchema = z.object({
-  name: localizedStringSchema,
-  logoUrl: z.string().nullable(),
-});
+export const partnerSchema = z
+  .object({
+    name: localizedStringSchema,
+    logoUrl: z.string().nullable(),
+    logoFile: z.custom<File | null>().nullable().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.logoUrl && !(data.logoFile instanceof File)) {
+      ctx.addIssue({ code: "custom", path: ["logoFile"], message: "الشعار مطلوب" });
+    }
+  });
 
 export const contactSchema = z.object({
   badge: localizedStringSchema,
