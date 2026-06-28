@@ -34,6 +34,7 @@ export {
   useUpdateAboutMutation,
   useGetProjectsQuery,
   useGetProjectQuery,
+  useGetProjectMediaQuery,
   useGetMilestonesQuery,
   useGetMilestoneByIdQuery,
   useGetVideoQuery,

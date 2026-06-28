@@ -434,7 +434,17 @@ Field mapping: `isPublished` ↔ `published`. Status enum: `planning` | `in_prog
 
 RTK: `useProjects(params)` / `useProject(id)` → tags `Projects` / `Project`. Client: [`lib/api/projects.ts`](lib/api/projects.ts). Admin UI: `/admin/projects`.
 
-Project media gallery (`/admin/projects/[id]`) remains on mock until media API is wired.
+**Project media** (`/projects/:id/media`):
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/projects/:id/media` | — |
+| POST | `/projects/:id/media` | multipart: `image` (file), `order` |
+| PATCH | `/projects/:id/media/:mediaId` | multipart: `image` (file), `order` |
+| DELETE | `/projects/:id/media/:mediaId` | — |
+| PUT | `/projects/:id/media/reorder` | `{ ids: string[] }` |
+
+Field mapping: `imageUrl` / `imagePath` → `ProjectMedia.url`; images only (`type: "image"`). RTK: `useProjectMedia(projectId)` → tag `Project`.
 
 ### Singleton sub-collections
 

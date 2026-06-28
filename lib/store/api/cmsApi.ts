@@ -16,6 +16,7 @@ import type {
   PaginatedResponse,
   Partner,
   Project,
+  ProjectMedia,
   ProjectsListParams,
   ProjectsListResult,
   Value,
@@ -51,6 +52,10 @@ export const cmsEndpoints = baseApi.injectEndpoints({
     getProject: builder.query<Project, string>({
       queryFn: (id) => wrapQueryFn(projectsApi.getById(id)),
       providesTags: (_result, _error, id) => [{ type: "Project", id }],
+    }),
+    getProjectMedia: builder.query<ProjectMedia[], string>({
+      queryFn: (projectId) => wrapQueryFn(projectsApi.listMedia(projectId)),
+      providesTags: (_result, _error, projectId) => [{ type: "Project", id: projectId }],
     }),
     getMilestones: builder.query<Milestone[], void>({
       queryFn: () => wrapQueryFn(aspirationsApi.list()),
@@ -105,6 +110,7 @@ export const {
   useUpdateAboutMutation,
   useGetProjectsQuery,
   useGetProjectQuery,
+  useGetProjectMediaQuery,
   useGetMilestonesQuery,
   useGetMilestoneByIdQuery,
   useGetVideoQuery,

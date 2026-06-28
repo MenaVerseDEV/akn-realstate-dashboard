@@ -9,34 +9,43 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
 import { ReorderableList } from "@/components/cms/ReorderableList";
-import { MediaPicker } from "@/components/cms/MediaPicker";
+import { MediaDropzone } from "@/components/cms/MediaDropzone";
 import { ConfirmDeleteDialog } from "@/components/cms/ConfirmDeleteDialog";
-import { api, useProject } from "@/lib/hooks/use-cms";
+import { useProject, useProjectMedia } from "@/lib/hooks/use-cms";
+import * as projectsApi from "@/lib/api/projects";
 import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import type { ProjectMedia } from "@/lib/types";
+import { ProjectMediaForm } from "../ProjectMediaForm";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const { data: project, isLoading } = useProject(id);
+  const { data: project, isLoading: isProjectLoading } = useProject(id);
+  const { data: media = [], isLoading: isMediaLoading } = useProjectMedia(id);
   const dispatch = useAppDispatch();
   const [deleting, setDeleting] = useState<ProjectMedia | null>(null);
-  const [newMediaUrl, setNewMediaUrl] = useState<string | null>(null);
+  const [editing, setEditing] = useState<ProjectMedia | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  if (isLoading) return <PageLoadingSkeleton />;
-  if (!project) return <p>المشروع غير موجود</p>;
+  const invalidateMedia = () => {
+    dispatch(baseApi.util.invalidateTags([...tags.project(id), ...tags.projects]));
+  };
 
-  const handleAddMedia = async () => {
-    if (!newMediaUrl) return;
+  const handleAddMedia = async (file: File) => {
+    setIsUploading(true);
     try {
-      await api.addProjectMedia(id, { url: newMediaUrl, type: "image", caption: null });
-      dispatch(baseApi.util.invalidateTags(tags.project(id)));
-      setNewMediaUrl(null);
+      await projectsApi.addMedia(id, file, media.length + 1);
+      invalidateMedia();
       toast.success("تمت إضافة الوسائط");
     } catch {
       toast.error("فشل الإضافة");
+    } finally {
+      setIsUploading(false);
     }
   };
+
+  if (isProjectLoading) return <PageLoadingSkeleton />;
+  if (!project) return <p>المشروع غير موجود</p>;
 
   return (
     <div className="space-y-6">
@@ -55,53 +64,83 @@ export default function ProjectDetailPage() {
 
       <div className="border border-border bg-bg-card p-6">
         <h3 className="mb-4 text-lg font-bold">معرض الوسائط</h3>
-        <div className="mb-4 flex items-end gap-4">
-          <MediaPicker label="اختر صورة" value={newMediaUrl} onChange={setNewMediaUrl} />
-          <Button type="button" onClick={handleAddMedia} disabled={!newMediaUrl}>
-            إضافة للمعرض
-          </Button>
+        <div className="mb-4">
+          <MediaDropzone
+            accept="image/*"
+            isUploading={isUploading}
+            onFileSelect={handleAddMedia}
+            onInvalidFile={() => toast.error("يرجى اختيار ملف صورة صالح")}
+          />
         </div>
 
-        {project.media.length === 0 ? (
+        {isMediaLoading ? (
+          <PageLoadingSkeleton />
+        ) : media.length === 0 ? (
           <p className="text-muted-foreground">لا توجد وسائط بعد</p>
         ) : (
           <ReorderableList
-            items={project.media}
+            items={media}
             onReorder={async (reordered) => {
-              await api.reorderProjectMedia(id, reordered.map((m) => m.id));
-              dispatch(baseApi.util.invalidateTags(tags.project(id)));
-              toast.success("تم تحديث الترتيب");
+              try {
+                await projectsApi.reorderMedia(id, reordered.map((m) => m.id));
+                invalidateMedia();
+                toast.success("تم تحديث الترتيب");
+              } catch {
+                toast.error("فشل تحديث الترتيب");
+              }
             }}
-            renderItem={(media) => (
+            renderItem={(item) => (
               <div className="flex flex-1 items-center gap-4">
                 <div className="relative size-16 overflow-hidden border border-border">
-                  <Image src={media.url} alt="" fill className="object-cover" unoptimized />
+                  <Image src={item.url} alt="" fill className="object-cover" unoptimized />
                 </div>
-                <span className="text-sm text-muted-foreground">{media.type}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  className="ms-auto"
-                  onClick={() => setDeleting(media)}
-                >
-                  <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
-                </Button>
+                <span className="text-sm text-muted-foreground">ترتيب: {item.order}</span>
+                <div className="ms-auto flex gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => setEditing(item)}
+                  >
+                    <Icon icon="solar:pen-bold" width={16} />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-xs"
+                    onClick={() => setDeleting(item)}
+                  >
+                    <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
+                  </Button>
+                </div>
               </div>
             )}
           />
         )}
       </div>
 
+      {editing ? (
+        <ProjectMediaForm
+          projectId={id}
+          item={editing}
+          open={!!editing}
+          onOpenChange={(open) => !open && setEditing(null)}
+        />
+      ) : null}
+
       <ConfirmDeleteDialog
         open={!!deleting}
         onOpenChange={(open) => !open && setDeleting(null)}
         onConfirm={async () => {
           if (!deleting) return;
-          await api.deleteProjectMedia(id, deleting.id);
-          dispatch(baseApi.util.invalidateTags(tags.project(id)));
-          setDeleting(null);
-          toast.success("تم الحذف");
+          try {
+            await projectsApi.deleteMedia(id, deleting.id);
+            invalidateMedia();
+            setDeleting(null);
+            toast.success("تم الحذف");
+          } catch {
+            toast.error("فشل الحذف");
+          }
         }}
       />
     </div>

@@ -3,13 +3,19 @@ import {
   buildListQuery,
   mergeProjectLists,
   toApiInput,
+  toMediaFormData,
+  toMediaPatchFormData,
   toProject,
+  toProjectMedia,
 } from "@/lib/api/mappers/projects";
 import { apiUrl, parseApiResponse } from "@/lib/api/parse-response";
 import type {
   Project,
   ProjectApi,
   ProjectFormValues,
+  ProjectMedia,
+  ProjectMediaApi,
+  ProjectMediaPatchInput,
   ProjectsListApiResponse,
   ProjectsListParams,
   ProjectsListResult,
@@ -109,4 +115,59 @@ export async function deleteProject(id: string): Promise<void> {
   if (!response.ok && response.status !== 204) {
     await parseApiResponse<unknown>(response);
   }
+}
+
+export async function listMedia(projectId: string): Promise<ProjectMedia[]> {
+  const response = await authorizedFetch(`/projects/${projectId}/media`, { method: "GET" });
+  const data = await parseApiResponse<ProjectMediaApi[]>(response);
+  return data.map(toProjectMedia);
+}
+
+export async function addMedia(
+  projectId: string,
+  imageFile: File,
+  order: number,
+): Promise<ProjectMedia> {
+  const response = await authorizedFetch(`/projects/${projectId}/media`, {
+    method: "POST",
+    body: toMediaFormData({ imageFile, order }),
+  });
+
+  const data = await parseApiResponse<ProjectMediaApi>(response);
+  return toProjectMedia(data);
+}
+
+export async function updateMedia(
+  projectId: string,
+  mediaId: string,
+  patch: ProjectMediaPatchInput,
+): Promise<ProjectMedia> {
+  const response = await authorizedFetch(`/projects/${projectId}/media/${mediaId}`, {
+    method: "PATCH",
+    body: toMediaPatchFormData(patch),
+  });
+
+  const data = await parseApiResponse<ProjectMediaApi>(response);
+  return toProjectMedia(data);
+}
+
+export async function deleteMedia(projectId: string, mediaId: string): Promise<void> {
+  const response = await authorizedFetch(`/projects/${projectId}/media/${mediaId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok && response.status !== 204) {
+    await parseApiResponse<unknown>(response);
+  }
+}
+
+export async function reorderMedia(projectId: string, ids: string[]): Promise<ProjectMedia[]> {
+  const response = await authorizedFetch(`/projects/${projectId}/media/reorder`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids }),
+  });
+
+  await parseApiResponse<unknown>(response);
+  return listMedia(projectId);
 }

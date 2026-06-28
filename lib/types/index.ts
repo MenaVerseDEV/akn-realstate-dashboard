@@ -209,6 +209,26 @@ export type ProjectMedia = {
   order: number;
 };
 
+export type ProjectMediaApi = {
+  id: string;
+  projectId: string;
+  imagePath?: string | null;
+  imageUrl?: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProjectMediaInput = {
+  imageFile: File;
+  order: number;
+};
+
+export type ProjectMediaPatchInput = {
+  imageFile?: File | null;
+  order?: number;
+};
+
 export type Project = {
   id: string;
   slug: string;
@@ -228,7 +248,7 @@ export type ProjectApi = {
   description: LocalizedString | string;
   status: ProjectStatus;
   isPublished: boolean;
-  media: ProjectMedia[];
+  media: ProjectMediaApi[] | ProjectMedia[];
   createdAt: string;
   updatedAt: string;
 };

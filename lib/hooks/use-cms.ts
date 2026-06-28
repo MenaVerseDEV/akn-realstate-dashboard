@@ -14,6 +14,7 @@ import {
   useGetMilestonesQuery,
   useGetPartnersQuery,
   useGetProjectQuery,
+  useGetProjectMediaQuery,
   useGetProjectsQuery,
   useGetSettingsQuery,
   useGetValuesQuery,
@@ -75,6 +76,10 @@ export function useProjects(params?: ProjectsListParams) {
 
 export function useProject(id: string) {
   return useGetProjectQuery(id, { skip: !id });
+}
+
+export function useProjectMedia(projectId: string) {
+  return useGetProjectMediaQuery(projectId, { skip: !projectId });
 }
 
 export function useMilestones() {

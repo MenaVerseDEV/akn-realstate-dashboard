@@ -4,6 +4,10 @@ import type {
   ProjectApi,
   ProjectFormValues,
   ProjectInput,
+  ProjectMedia,
+  ProjectMediaApi,
+  ProjectMediaInput,
+  ProjectMediaPatchInput,
   ProjectsListApiResponse,
   ProjectsListParams,
   ProjectsListResult,
@@ -36,6 +40,48 @@ function localizedEn(value: LocalizedString | string): string | undefined {
   return undefined;
 }
 
+function normalizeProjectMedia(item: ProjectMediaApi | ProjectMedia): ProjectMedia {
+  if ("imageUrl" in item || "imagePath" in item) {
+    return toProjectMedia(item as ProjectMediaApi);
+  }
+  return item as ProjectMedia;
+}
+
+export function toProjectMedia(api: ProjectMediaApi): ProjectMedia {
+  const url =
+    typeof api.imageUrl === "string" && api.imageUrl.length > 0
+      ? api.imageUrl
+      : typeof api.imagePath === "string" && api.imagePath.length > 0
+        ? api.imagePath
+        : "";
+
+  return {
+    id: api.id,
+    url,
+    type: "image",
+    caption: null,
+    order: api.order,
+  };
+}
+
+export function toMediaFormData(input: ProjectMediaInput): FormData {
+  const formData = new FormData();
+  formData.append("image", input.imageFile, input.imageFile.name);
+  formData.append("order", String(input.order));
+  return formData;
+}
+
+export function toMediaPatchFormData(input: ProjectMediaPatchInput): FormData {
+  const formData = new FormData();
+  if (input.imageFile instanceof File) {
+    formData.append("image", input.imageFile, input.imageFile.name);
+  }
+  if (input.order !== undefined) {
+    formData.append("order", String(input.order));
+  }
+  return formData;
+}
+
 export function toProject(
   api: ProjectApi,
   nameEn?: string,
@@ -48,7 +94,7 @@ export function toProject(
     description: parseLocalizedField(api.description, descriptionEn),
     status: api.status,
     published: api.isPublished,
-    media: api.media ?? [],
+    media: (api.media ?? []).map(normalizeProjectMedia),
     createdAt: api.createdAt,
     updatedAt: api.updatedAt,
   };
