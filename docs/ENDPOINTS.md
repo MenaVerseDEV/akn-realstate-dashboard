@@ -475,7 +475,7 @@ Production path: `/api/v1/home/contact-us-section` (Bearer required). Called **d
 | GET | `/home/contact-us-section` | — |
 | PUT | `/home/contact-us-section` | JSON: `subtitle`, `title`, `description`, `phone`, `email`, `mapLink`, `primaryCtaLabel`, `primaryCtaLink`, `secondaryCtaLabel`, `secondaryCtaLink` |
 
-Field mapping: `subtitle` ↔ `badge`, `mapLink` ↔ `mapUrl`, `primaryCtaLink` ↔ `primaryCtaHref`, `secondaryCtaLink` ↔ `secondaryCtaHref`. CTA labels are bilingual `LocalizedString`.
+Field names match the API directly (no dashboard rename layer). CTA labels are bilingual `LocalizedString`.
 
 RTK: `useContact()` / `useUpdateContact()` → tag `Contact`. Client: [`lib/api/contact.ts`](lib/api/contact.ts). Admin UI: `/admin/contact`.
 

@@ -106,16 +106,16 @@ export const partnerSchema = z
   });
 
 export const contactSchema = z.object({
-  badge: localizedStringSchema,
+  subtitle: localizedStringSchema,
   title: localizedStringSchema,
   description: localizedStringSchema,
   phone: z.string().min(1),
   email: z.string().email(),
-  mapUrl: z.string().nullable(),
+  mapLink: z.string().nullable(),
   primaryCtaLabel: localizedStringSchema,
-  primaryCtaHref: z.string().min(1),
+  primaryCtaLink: z.string().min(1),
   secondaryCtaLabel: localizedStringSchema,
-  secondaryCtaHref: z.string().min(1),
+  secondaryCtaLink: z.string().min(1),
 });
 
 export const footerServiceSchema = z.object({

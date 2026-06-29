@@ -1,7 +1,8 @@
 import { authFetch } from "@/lib/api/fetch-auth";
-import { toApiInput, toContact } from "@/lib/api/mappers/contact-us-section";
 import { apiUrl, parseApiResponse } from "@/lib/api/parse-response";
-import type { Contact, ContactFormValues, ContactUsSectionApi } from "@/lib/types";
+import type { Contact, ContactUsSection, ContactUsSectionInput } from "@/lib/types";
+
+const CONTACT_ID = "contact-us-section";
 
 async function authorizedFetch(path: string, init: RequestInit = {}): Promise<Response> {
   const headers = new Headers(init.headers);
@@ -9,18 +10,22 @@ async function authorizedFetch(path: string, init: RequestInit = {}): Promise<Re
   return authFetch(apiUrl(path), { ...init, headers, cache: "no-store" });
 }
 
-export async function getContact(): Promise<Contact> {
-  const response = await authorizedFetch("/home/contact-us-section", { method: "GET" });
-  const data = await parseApiResponse<ContactUsSectionApi>(response);
-  return toContact(data);
+function withId(data: ContactUsSection): Contact {
+  return { id: CONTACT_ID, ...data };
 }
 
-export async function updateContact(values: ContactFormValues): Promise<Contact> {
+export async function getContact(): Promise<Contact> {
+  const response = await authorizedFetch("/home/contact-us-section", { method: "GET" });
+  const data = await parseApiResponse<ContactUsSection>(response);
+  return withId(data);
+}
+
+export async function updateContact(values: ContactUsSectionInput): Promise<Contact> {
   const response = await authorizedFetch("/home/contact-us-section", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(toApiInput(values)),
+    body: JSON.stringify(values),
   });
-  const data = await parseApiResponse<ContactUsSectionApi>(response);
-  return toContact(data);
+  const data = await parseApiResponse<ContactUsSection>(response);
+  return withId(data);
 }

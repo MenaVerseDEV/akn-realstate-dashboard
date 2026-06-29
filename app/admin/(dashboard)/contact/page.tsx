@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useContact, useUpdateContact } from "@/lib/hooks/use-cms";
 import { contactSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
+import type { ContactUsSectionInput } from "@/lib/types";
 import type { z } from "zod";
 
 type FormValues = z.infer<typeof contactSchema>;
@@ -19,16 +20,16 @@ export default function ContactPage() {
 
   const formData: FormValues | undefined = data
     ? {
-        badge: data.badge,
+        subtitle: data.subtitle,
         title: data.title,
         description: data.description,
         phone: data.phone,
         email: data.email,
-        mapUrl: data.mapUrl,
+        mapLink: data.mapLink,
         primaryCtaLabel: data.primaryCtaLabel,
-        primaryCtaHref: data.primaryCtaHref,
+        primaryCtaLink: data.primaryCtaLink,
         secondaryCtaLabel: data.secondaryCtaLabel,
-        secondaryCtaHref: data.secondaryCtaHref,
+        secondaryCtaLink: data.secondaryCtaLink,
       }
     : undefined;
 
@@ -38,23 +39,23 @@ export default function ContactPage() {
       <SingletonForm
         schema={contactSchema}
         defaultValues={{
-          badge: { ar: "" },
+          subtitle: { ar: "" },
           title: { ar: "" },
           description: { ar: "" },
           phone: "",
           email: "",
-          mapUrl: null,
+          mapLink: null,
           primaryCtaLabel: { ar: "" },
-          primaryCtaHref: "",
+          primaryCtaLink: "",
           secondaryCtaLabel: { ar: "" },
-          secondaryCtaHref: "",
+          secondaryCtaLink: "",
         }}
         data={formData}
         isLoading={isLoading}
         saving={update.isPending}
         onSubmit={async (values) => {
           try {
-            await update.mutateAsync(values);
+            await update.mutateAsync(values as ContactUsSectionInput);
             toast.success("تم الحفظ");
           } catch {
             toast.error("فشل الحفظ");
@@ -66,8 +67,8 @@ export default function ContactPage() {
             <FormSection title="المحتوى">
               <LocalizedInput
                 label="الشارة"
-                value={form.watch("badge")}
-                onChange={(v) => form.setValue("badge", v, { shouldDirty: true })}
+                value={form.watch("subtitle")}
+                onChange={(v) => form.setValue("subtitle", v, { shouldDirty: true })}
               />
               <LocalizedInput
                 label="العنوان"
@@ -94,7 +95,7 @@ export default function ContactPage() {
                 <div className="space-y-2 sm:col-span-2">
                   <Label>رابط الخريطة</Label>
                   <Input
-                    {...form.register("mapUrl")}
+                    {...form.register("mapLink")}
                     dir="ltr"
                     className={ltrInputClass}
                     placeholder="https://..."
@@ -111,7 +112,7 @@ export default function ContactPage() {
                 />
                 <div className="space-y-2">
                   <Label>الزر الأساسي — الرابط</Label>
-                  <Input {...form.register("primaryCtaHref")} dir="ltr" className={ltrInputClass} />
+                  <Input {...form.register("primaryCtaLink")} dir="ltr" className={ltrInputClass} />
                 </div>
                 <LocalizedInput
                   label="الزر الثانوي — النص"
@@ -121,7 +122,7 @@ export default function ContactPage() {
                 <div className="space-y-2">
                   <Label>الزر الثانوي — الرابط</Label>
                   <Input
-                    {...form.register("secondaryCtaHref")}
+                    {...form.register("secondaryCtaLink")}
                     dir="ltr"
                     className={ltrInputClass}
                   />

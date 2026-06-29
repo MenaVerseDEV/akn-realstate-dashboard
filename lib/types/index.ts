@@ -444,23 +444,7 @@ export type PartnerInput = {
   logoFile?: File | null;
 };
 
-export type Contact = {
-  id: string;
-  badge: LocalizedString;
-  title: LocalizedString;
-  description: LocalizedString;
-  phone: string;
-  email: string;
-  mapUrl: string | null;
-  primaryCtaLabel: LocalizedString;
-  primaryCtaHref: string;
-  secondaryCtaLabel: LocalizedString;
-  secondaryCtaHref: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ContactUsSectionApi = {
+export type ContactUsSection = {
   subtitle: LocalizedString;
   title: LocalizedString;
   description: LocalizedString;
@@ -475,18 +459,9 @@ export type ContactUsSectionApi = {
   updatedAt: string;
 };
 
-export type ContactFormValues = {
-  badge: LocalizedString;
-  title: LocalizedString;
-  description: LocalizedString;
-  phone: string;
-  email: string;
-  mapUrl: string | null;
-  primaryCtaLabel: LocalizedString;
-  primaryCtaHref: string;
-  secondaryCtaLabel: LocalizedString;
-  secondaryCtaHref: string;
-};
+export type Contact = ContactUsSection & { id: string };
+
+export type ContactUsSectionInput = Omit<ContactUsSection, "createdAt" | "updatedAt">;
 
 export type FooterServiceApi = {
   id: string;

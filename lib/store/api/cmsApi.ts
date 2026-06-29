@@ -11,7 +11,7 @@ import type {
   About,
   AboutFormValues,
   Contact,
-  ContactFormValues,
+  ContactUsSectionInput,
   Feature,
   Footer,
   Hero,
@@ -106,7 +106,7 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       queryFn: () => wrapQueryFn(contactApi.getContact()),
       providesTags: ["Contact"],
     }),
-    updateContact: builder.mutation<Contact, ContactFormValues>({
+    updateContact: builder.mutation<Contact, ContactUsSectionInput>({
       queryFn: (body) => wrapQueryFn(contactApi.updateContact(body)),
       invalidatesTags: ["Contact"],
     }),

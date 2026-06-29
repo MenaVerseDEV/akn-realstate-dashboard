@@ -201,16 +201,16 @@ export function createSeedData() {
 
   const contact: Contact = {
     id: "contact_1",
-    badge: loc("ابدأ رحلتك العقارية اليوم مع أكن"),
+    subtitle: loc("ابدأ رحلتك العقارية اليوم مع أكن"),
     title: loc("هل أنت مستعد لمستقبل سكني أفضل؟"),
     description: loc("تواصل معنا الآن واحصل على استشارة عقارية مجانية من فريقنا المتخصص."),
     phone: "920015990",
     email: "info@akn.sa",
-    mapUrl: null,
+    mapLink: null,
     primaryCtaLabel: loc("اتصل بنا"),
-    primaryCtaHref: "tel:920015990",
+    primaryCtaLink: "tel:920015990",
     secondaryCtaLabel: loc("راسلنا"),
-    secondaryCtaHref: "mailto:info@akn.sa",
+    secondaryCtaLink: "mailto:info@akn.sa",
     createdAt: now(),
     updatedAt: now(),
   };
