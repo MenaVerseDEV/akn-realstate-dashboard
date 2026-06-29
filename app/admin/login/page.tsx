@@ -29,7 +29,10 @@ export default function LoginPage() {
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: {
+      email: "superadmin@akn.com",
+      password: "4K_YaGTUQUDuHpiX8jTrpEky_jBvDCAw",
+    },
   });
 
   const onSubmit = async (values: LoginForm) => {
