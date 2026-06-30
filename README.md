@@ -11,22 +11,18 @@ It contains the **Node.js (NestJS) backend API** and the **admin dashboard** tha
 
 ## Admin dashboard (frontend)
 
-The Next.js admin UI lives at the **repo root**. It uses an in-memory mock API by default — no backend required.
+The Next.js admin UI lives at the **repo root**. It calls the Heroku API directly via `authFetch` (see `NEXT_PUBLIC_API_URL`).
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 npm install
 npm run dev          # http://localhost:3000
 ```
 
-**Demo login:** `owner@akn.sa` / `admin123`
-
-Set `NEXT_PUBLIC_USE_MOCK=false` when the NestJS API is ready (not wired yet).
-
 ### Modules
 
 Site Settings · Navigation · Hero (+ Stats) · About (+ Cards) · Projects (+ Media gallery)
-· Milestones · Video · Values · Features · Partners · Contact · Footer (+ Services, Socials) · Media Library
+· Milestones · Video · Values · Features · Partners · Contact · Footer (+ Services, Socials)
 
 ## What's here
 

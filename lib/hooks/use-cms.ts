@@ -6,11 +6,9 @@ import {
   useGetContactQuery,
   useGetFeaturesQuery,
   useGetFooterInfoQuery,
-  useGetFooterQuery,
   useListFooterServicesQuery,
   useListFooterSocialLinksQuery,
   useGetHeroQuery,
-  useGetMediaQuery,
   useGetMilestonesQuery,
   useGetPartnersQuery,
   useGetProjectQuery,
@@ -23,14 +21,10 @@ import {
   useUpdateAboutMutation,
   useUpdateContactMutation,
   useUpdateFooterInfoMutation,
-  useUpdateFooterMutation,
   useUpdateHeroMutation,
   useUpdateSettingsMutation,
   useUpdateVideoMutation,
-  api,
 } from "@/lib/store/api";
-
-export { api };
 
 function wrapMutation<T extends (...args: never[]) => unknown>(
   useMutationHook: () => readonly [T, { isLoading: boolean; isError: boolean; isSuccess: boolean; error: unknown }],
@@ -52,7 +46,6 @@ export const useUpdateAbout = wrapMutation(useUpdateAboutMutation);
 export const useUpdateVideo = wrapMutation(useUpdateVideoMutation);
 export const useUpdateContact = wrapMutation(useUpdateContactMutation);
 export const useUpdateFooterInfo = wrapMutation(useUpdateFooterInfoMutation);
-export const useUpdateFooter = wrapMutation(useUpdateFooterMutation);
 
 export function useSettings() {
   return useGetSettingsQuery();
@@ -106,10 +99,6 @@ export function useContact() {
   return useGetContactQuery();
 }
 
-export function useFooter() {
-  return useGetFooterQuery();
-}
-
 export function useFooterServices() {
   return useListFooterServicesQuery();
 }
@@ -120,8 +109,4 @@ export function useFooterSocialLinks() {
 
 export function useFooterInfo() {
   return useGetFooterInfoQuery();
-}
-
-export function useMedia(page = 1, type?: "image" | "video") {
-  return useGetMediaQuery({ page, type });
 }

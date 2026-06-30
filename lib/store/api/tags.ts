@@ -10,11 +10,9 @@ export type CacheTag =
   | "Features"
   | "Partners"
   | "Contact"
-  | "Footer"
   | "FooterInfo"
   | "FooterServices"
   | "FooterSocialLinks"
-  | "Media"
   | "Auth"
   | { type: "Project"; id: string }
   | { type: "Nav"; id: string };
@@ -32,10 +30,8 @@ export const tags = {
   features: ["Features"] as CacheTag[],
   partners: ["Partners"] as CacheTag[],
   contact: ["Contact"] as CacheTag[],
-  footer: ["Footer"] as CacheTag[],
   footerInfo: ["FooterInfo"] as CacheTag[],
   footerServices: ["FooterServices"] as CacheTag[],
   footerSocialLinks: ["FooterSocialLinks"] as CacheTag[],
-  media: ["Media"] as CacheTag[],
   auth: ["Auth"] as CacheTag[],
 };

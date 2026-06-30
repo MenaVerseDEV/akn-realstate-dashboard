@@ -568,34 +568,6 @@ export type SocialLink = {
   updatedAt: string;
 };
 
-export type Footer = {
-  id: string;
-  companyName: LocalizedString;
-  description: LocalizedString;
-  logoUrl: string | null;
-  address: LocalizedString;
-  phone: string;
-  email: string;
-  services: FooterService[];
-  socials: SocialLink[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type MediaType = "image" | "video";
-
-export type MediaAsset = {
-  id: string;
-  url: string;
-  type: MediaType;
-  altText: LocalizedString | null;
-  width: number | null;
-  height: number | null;
-  size: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type PaginatedResponse<T> = {
   data: T[];
   total: number;
@@ -611,7 +583,5 @@ export type CollectionModule =
   | "features"
   | "partners";
 
-export const DEMO_EMAIL = "owner@akn.sa";
-export const DEMO_PASSWORD = "admin123";
 export const AUTH_COOKIE = "akn_auth_token";
 export const REFRESH_COOKIE = "akn_refresh_token";

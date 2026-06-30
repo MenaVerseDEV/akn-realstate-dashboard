@@ -37,10 +37,4 @@ export const adminNavigation: NavGroup[] = [
       { title: "التذييل", href: "/admin/footer", icon: "solar:document-text-bold" },
     ],
   },
-  {
-    label: "المكتبة",
-    items: [
-      { title: "الوسائط", href: "/admin/media", icon: "solar:gallery-bold" },
-    ],
-  },
 ];

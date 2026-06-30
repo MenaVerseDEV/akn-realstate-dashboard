@@ -1,4 +1,3 @@
-import { getApiClient } from "@/lib/api";
 import * as aboutApi from "@/lib/api/about";
 import * as aspirationsApi from "@/lib/api/aspirations";
 import * as valuesApi from "@/lib/api/values";
@@ -14,12 +13,9 @@ import type {
   Contact,
   ContactUsSectionInput,
   Feature,
-  Footer,
   Hero,
   HeroFormValues,
-  MediaAsset,
   Milestone,
-  PaginatedResponse,
   Partner,
   Project,
   ProjectMedia,
@@ -31,8 +27,6 @@ import type {
 } from "@/lib/types";
 import { baseApi } from "./baseApi";
 import { wrapQueryFn } from "./queryFn";
-
-const api = getApiClient();
 
 export const cmsEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -112,13 +106,6 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       queryFn: (body) => wrapQueryFn(contactApi.updateContact(body)),
       invalidatesTags: ["Contact"],
     }),
-    getMedia: builder.query<
-      PaginatedResponse<MediaAsset>,
-      { page?: number; type?: "image" | "video" }
-    >({
-      queryFn: ({ page = 1, type }) => wrapQueryFn(api.getMedia(page, 20, type)),
-      providesTags: ["Media"],
-    }),
   }),
 });
 
@@ -142,7 +129,4 @@ export const {
   useGetPartnerByIdQuery,
   useGetContactQuery,
   useUpdateContactMutation,
-  useGetMediaQuery,
 } = cmsEndpoints;
-
-export { api };

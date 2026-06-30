@@ -24,8 +24,6 @@ export {
   useGetFooterServiceByIdQuery,
   useListFooterSocialLinksQuery,
   useGetFooterSocialLinkByIdQuery,
-  useGetFooterQuery,
-  useUpdateFooterMutation,
 } from "./footerApi";
 export {
   useGetHeroQuery,
@@ -47,6 +45,4 @@ export {
   useGetPartnerByIdQuery,
   useGetContactQuery,
   useUpdateContactMutation,
-  useGetMediaQuery,
-  api,
 } from "./cmsApi";

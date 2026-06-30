@@ -1,12 +1,9 @@
-import { getApiClient } from "@/lib/api";
 import * as footerApi from "@/lib/api/footer";
 import * as footerServicesApi from "@/lib/api/footer-services";
 import * as footerSocialLinksApi from "@/lib/api/footer-social-links";
-import type { Footer, FooterInfo, FooterInfoFormValues, FooterService, SocialLink } from "@/lib/types";
+import type { FooterInfo, FooterInfoFormValues, FooterService, SocialLink } from "@/lib/types";
 import { baseApi } from "./baseApi";
 import { wrapQueryFn } from "./queryFn";
-
-const api = getApiClient();
 
 export const footerEndpoints = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -34,14 +31,6 @@ export const footerEndpoints = baseApi.injectEndpoints({
       queryFn: (id) => wrapQueryFn(footerSocialLinksApi.getById(id)),
       providesTags: ["FooterSocialLinks"],
     }),
-    getFooter: builder.query<Footer, void>({
-      queryFn: () => wrapQueryFn(api.getFooter()),
-      providesTags: ["Footer"],
-    }),
-    updateFooter: builder.mutation<Footer, Partial<Footer>>({
-      queryFn: (body) => wrapQueryFn(api.updateFooter(body)),
-      invalidatesTags: ["Footer"],
-    }),
   }),
 });
 
@@ -52,6 +41,4 @@ export const {
   useGetFooterServiceByIdQuery,
   useListFooterSocialLinksQuery,
   useGetFooterSocialLinkByIdQuery,
-  useGetFooterQuery,
-  useUpdateFooterMutation,
 } = footerEndpoints;
