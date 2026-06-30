@@ -166,7 +166,7 @@ export function createSeedData() {
     title: loc("اكتشف عالم أكن"),
     description: loc("شاهد رحلتنا في بناء مستقبل سكني استثنائي"),
     videoUrl: "/images/akn/102/WhatsApp Video 2026-05-21 at 10.18.57 AM.mp4",
-    posterUrl: "/images/akn/102/WhatsApp Image 2026-05-21 at 10.18.55 AM (2).jpeg",
+    coverImageUrl: "/images/akn/102/WhatsApp Image 2026-05-21 at 10.18.55 AM (2).jpeg",
     createdAt: now(),
     updatedAt: now(),
   };

@@ -77,7 +77,9 @@ export const videoSchema = z.object({
   title: localizedStringSchema,
   description: localizedStringSchema,
   videoUrl: z.string().nullable(),
-  posterUrl: z.string().nullable(),
+  videoFile: z.custom<File | null>().nullable().optional(),
+  coverImageUrl: z.string().nullable(),
+  coverImageFile: z.custom<File | null>().nullable().optional(),
 });
 
 export const valueSchema = z.object({

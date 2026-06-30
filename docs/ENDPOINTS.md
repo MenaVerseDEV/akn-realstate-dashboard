@@ -479,6 +479,19 @@ Field names match the API directly (no dashboard rename layer). CTA labels are b
 
 RTK: `useContact()` / `useUpdateContact()` → tag `Contact`. Client: [`lib/api/contact.ts`](lib/api/contact.ts). Admin UI: `/admin/contact`.
 
+### Home video section (real API, direct client + RTK)
+
+Production path: `/api/v1/home/video-section` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/home/video-section` | — |
+| PUT | `/home/video-section` | `multipart`: `title`, `description` (JSON strings), `video` (file, optional), `coverImage` (file, optional) |
+
+`videoUrl` / `videoPath` and `coverImageUrl` / `coverImagePath` resolved on GET (prefer CDN URL). Files upload directly on PUT — no media library.
+
+RTK: `useVideo()` / `useUpdateVideo()` → tag `Video`. Client: [`lib/api/video.ts`](lib/api/video.ts). Admin UI: `/admin/video`.
+
 ### Projects (real API, direct client + RTK)
 
 Production path: `/api/v1/projects` (Bearer required). Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.

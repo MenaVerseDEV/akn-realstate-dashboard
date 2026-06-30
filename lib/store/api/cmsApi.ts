@@ -5,6 +5,7 @@ import * as valuesApi from "@/lib/api/values";
 import * as featuresApi from "@/lib/api/features";
 import * as partnersApi from "@/lib/api/partners";
 import * as contactApi from "@/lib/api/contact";
+import * as videoApi from "@/lib/api/video";
 import * as projectsApi from "@/lib/api/projects";
 import * as heroApi from "@/lib/api/hero";
 import type {
@@ -26,6 +27,7 @@ import type {
   ProjectsListResult,
   Value,
   VideoShowcase,
+  VideoSectionFormValues,
 } from "@/lib/types";
 import { baseApi } from "./baseApi";
 import { wrapQueryFn } from "./queryFn";
@@ -71,11 +73,11 @@ export const cmsEndpoints = baseApi.injectEndpoints({
       providesTags: ["Milestones"],
     }),
     getVideo: builder.query<VideoShowcase, void>({
-      queryFn: () => wrapQueryFn(api.getVideo()),
+      queryFn: () => wrapQueryFn(videoApi.getVideo()),
       providesTags: ["Video"],
     }),
-    updateVideo: builder.mutation<VideoShowcase, Partial<VideoShowcase>>({
-      queryFn: (body) => wrapQueryFn(api.updateVideo(body)),
+    updateVideo: builder.mutation<VideoShowcase, VideoSectionFormValues>({
+      queryFn: (body) => wrapQueryFn(videoApi.updateVideo(body)),
       invalidatesTags: ["Video"],
     }),
     getValues: builder.query<Value[], void>({

@@ -333,14 +333,26 @@ export type AspirationInput = {
   icon: string;
 };
 
-export type VideoShowcase = {
-  id: string;
+export type VideoSection = {
+  title: LocalizedString;
+  description: LocalizedString;
+  videoPath?: string | null;
+  videoUrl: string | null;
+  coverImagePath?: string | null;
+  coverImageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type VideoShowcase = VideoSection & { id: string };
+
+export type VideoSectionFormValues = {
   title: LocalizedString;
   description: LocalizedString;
   videoUrl: string | null;
-  posterUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
+  videoFile?: File | null;
+  coverImageUrl: string | null;
+  coverImageFile?: File | null;
 };
 
 export type Value = {
