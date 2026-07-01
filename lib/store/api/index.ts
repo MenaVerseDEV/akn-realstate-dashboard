@@ -3,6 +3,7 @@ import "./settingsApi";
 import "./navApi";
 import "./footerApi";
 import "./cmsApi";
+import "./contactInquiriesApi";
 
 export { baseApi } from "./baseApi";
 export { tags } from "./tags";
@@ -53,3 +54,7 @@ export {
   useGetContactQuery,
   useUpdateContactMutation,
 } from "./cmsApi";
+export {
+  useGetContactInquiriesQuery,
+  useUpdateContactInquiryStatusMutation,
+} from "./contactInquiriesApi";

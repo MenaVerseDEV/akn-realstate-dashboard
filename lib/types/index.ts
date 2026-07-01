@@ -476,6 +476,52 @@ export type ContactUsSection = {
 
 export type Contact = ContactUsSection & { id: string };
 
+export type ContactInquiryStatus = "new" | "contacted" | "close";
+
+export type ContactInquiry = {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  budget: string;
+  desiredLocation: string;
+  message: string;
+  status: ContactInquiryStatus;
+  adminNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ContactInquiriesListParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: ContactInquiryStatus | "";
+};
+
+export type ContactInquiriesListMeta = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+};
+
+export type ContactInquiriesListResult = {
+  items: ContactInquiry[];
+  meta: ContactInquiriesListMeta;
+};
+
+export type ContactInquiriesListApiResponse = {
+  items: ContactInquiry[];
+  meta: ContactInquiriesListMeta;
+};
+
+export type ContactInquiryStatusInput = {
+  status: ContactInquiryStatus;
+};
+
 export type ContactUsSectionInput = Omit<ContactUsSection, "createdAt" | "updatedAt">;
 
 export type FooterServiceApi = {

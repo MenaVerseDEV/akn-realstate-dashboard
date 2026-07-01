@@ -1,8 +1,9 @@
 "use client";
 
-import type { ProjectsListParams } from "@/lib/types";
+import type { ContactInquiriesListParams, ProjectsListParams } from "@/lib/types";
 import {
   useGetAboutQuery,
+  useGetContactInquiriesQuery,
   useGetContactQuery,
   useGetFeaturesQuery,
   useGetFooterInfoQuery,
@@ -97,6 +98,10 @@ export function usePartners() {
 
 export function useContact() {
   return useGetContactQuery();
+}
+
+export function useContactInquiries(params?: ContactInquiriesListParams) {
+  return useGetContactInquiriesQuery(params ?? { page: 1, limit: 10 });
 }
 
 export function useFooterServices() {

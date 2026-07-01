@@ -29,6 +29,7 @@ export const adminNavigation: NavGroup[] = [
       { title: "المميزات", href: "/admin/features", icon: "solar:star-bold" },
       { title: "الشركاء", href: "/admin/partners", icon: "solar:handshake-bold" },
       { title: "التواصل", href: "/admin/contact", icon: "solar:phone-calling-bold" },
+      { title: "استفسارات التواصل", href: "/admin/inquiries", icon: "solar:letter-bold" },
     ],
   },
   {
