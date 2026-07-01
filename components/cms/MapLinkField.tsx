@@ -5,7 +5,6 @@ import { Icon } from "@iconify/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ltrInputClass } from "@/lib/i18n";
 import {
   buildMapLinkFromQuery,
@@ -13,12 +12,58 @@ import {
   isGoogleMapsUrl,
   toMapEmbedUrl,
 } from "@/lib/maps";
+import { cn } from "@/lib/utils";
+
+type MapMode = "search" | "paste";
 
 type MapLinkFieldProps = {
   label?: string;
   value: string | null;
   onChange: (value: string | null) => void;
 };
+
+const mapModeOptions: { id: MapMode; label: string; icon: string }[] = [
+  { id: "search", label: "بحث عن موقع", icon: "solar:magnifer-linear" },
+  { id: "paste", label: "لصق من Google Maps", icon: "solar:link-round-linear" },
+];
+
+function MapModeToggle({
+  mode,
+  onChange,
+}: {
+  mode: MapMode;
+  onChange: (mode: MapMode) => void;
+}) {
+  return (
+    <div
+      className="inline-flex w-full gap-1 border border-border bg-bg p-1 sm:w-auto"
+      role="tablist"
+      aria-label="طريقة إدخال الموقع"
+    >
+      {mapModeOptions.map((item) => {
+        const active = mode === item.id;
+        return (
+          <button
+            key={item.id}
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(item.id)}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors sm:flex-none sm:min-w-40",
+              active
+                ? "bg-primary text-primary-foreground"
+                : "bg-bg-card text-dark/75 hover:bg-bg-dark hover:text-dark",
+            )}
+          >
+            <Icon icon={item.icon} width={18} aria-hidden />
+            {item.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function MapLinkField({ label = "رابط الخريطة", value, onChange }: MapLinkFieldProps) {
   const [mode, setMode] = useState<"search" | "paste">("search");
@@ -50,17 +95,10 @@ export function MapLinkField({ label = "رابط الخريطة", value, onChang
     <div className="space-y-3">
       <Label>{label}</Label>
 
-      <Tabs
-        value={mode}
-        onValueChange={(next) => setMode(next as "search" | "paste")}
-        className="gap-3"
-      >
-        <TabsList>
-          <TabsTrigger value="search">بحث عن موقع</TabsTrigger>
-          <TabsTrigger value="paste">لصق من Google Maps</TabsTrigger>
-        </TabsList>
+      <MapModeToggle mode={mode} onChange={setMode} />
 
-        <TabsContent value="search" className="space-y-2">
+      {mode === "search" ? (
+        <div className="space-y-2" role="tabpanel">
           <p className="text-sm text-muted-foreground">
             اكتب اسم المدينة أو العنوان، ثم اضغط تطبيق لإنشاء رابط الخريطة.
           </p>
@@ -91,9 +129,9 @@ export function MapLinkField({ label = "رابط الخريطة", value, onChang
               تطبيق
             </Button>
           </div>
-        </TabsContent>
-
-        <TabsContent value="paste" className="space-y-2">
+        </div>
+      ) : (
+        <div className="space-y-2" role="tabpanel">
           <p className="text-sm text-muted-foreground">
             افتح Google Maps، اختر الموقع، ثم انسخ الرابط من زر مشاركة والصقه هنا.
           </p>
@@ -111,8 +149,8 @@ export function MapLinkField({ label = "رابط الخريطة", value, onChang
           {pasteUrl && !isGoogleMapsUrl(pasteUrl) && (
             <p className="text-sm text-destructive">الرابط لا يبدو كرابط Google Maps صالح.</p>
           )}
-        </TabsContent>
-      </Tabs>
+        </div>
+      )}
 
       {hasLink && (
         <div className="space-y-2 rounded-md border border-border p-3">
