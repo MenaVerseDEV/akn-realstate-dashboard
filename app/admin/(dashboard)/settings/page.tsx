@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { FormSection } from "@/components/cms/FormSection";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { LogoUploadField } from "@/components/cms/LogoUploadField";
+import { MapLinkField } from "@/components/cms/MapLinkField";
 import { SingletonForm } from "@/components/cms/SingletonForm";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,6 +30,7 @@ const languageLabels: Record<DefaultLanguage, string> = {
 const defaultValues: FormValues = {
   siteName: { ar: "" },
   logoUrl: null,
+  mapLink: null,
   logoFile: null,
   defaultLocale: "ar",
 };
@@ -41,6 +43,7 @@ export default function SettingsPage() {
     ? {
         siteName: data.siteName,
         logoUrl: data.logoUrl,
+        mapLink: data.mapLink,
         defaultLocale: data.defaultLocale,
         logoFile: null,
       }
@@ -65,7 +68,8 @@ export default function SettingsPage() {
         }}
       >
         {(form) => (
-          <FormSection title="المعلومات الأساسية">
+          <>
+            <FormSection title="المعلومات الأساسية">
             <LocalizedInput
               label="اسم الموقع"
               value={form.watch("siteName")}
@@ -98,6 +102,13 @@ export default function SettingsPage() {
               onLogoFileChange={(file) => form.setValue("logoFile", file, { shouldDirty: true })}
             />
           </FormSection>
+          <FormSection title="الموقع على الخريطة">
+            <MapLinkField
+              value={form.watch("mapLink")}
+              onChange={(mapLink) => form.setValue("mapLink", mapLink, { shouldDirty: true })}
+            />
+          </FormSection>
+          </>
         )}
       </SingletonForm>
     </div>

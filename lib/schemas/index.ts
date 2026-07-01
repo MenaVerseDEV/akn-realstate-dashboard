@@ -16,6 +16,12 @@ export const optionalLocalizedStringSchema = z.object({
 export const siteSettingsSchema = z.object({
   siteName: localizedStringSchema,
   logoUrl: z.string().nullable(),
+  mapLink: z
+    .string()
+    .nullable()
+    .refine((value) => !value || /^https?:\/\//.test(value), {
+      message: "رابط غير صالح",
+    }),
   defaultLocale: defaultLanguageSchema,
   logoFile: z.custom<File | null>().nullable().optional(),
 });

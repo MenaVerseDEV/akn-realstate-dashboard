@@ -23,6 +23,7 @@ async function forwardPut(accessToken: string, formData: FormData) {
 
   const websiteName = formData.get("websiteName");
   const defaultLanguage = formData.get("defaultLanguage");
+  const mapLink = formData.get("mapLink");
   const logo = formData.get("logo");
 
   if (typeof websiteName === "string") {
@@ -33,6 +34,9 @@ async function forwardPut(accessToken: string, formData: FormData) {
       return NextResponse.json({ message: "اللغة الافتراضية غير صالحة" }, { status: 400 });
     }
     upstream.append("defaultLanguage", defaultLanguage);
+  }
+  if (typeof mapLink === "string") {
+    upstream.append("mapLink", mapLink);
   }
   if (logo instanceof File && logo.size > 0) {
     upstream.append("logo", logo, logo.name);

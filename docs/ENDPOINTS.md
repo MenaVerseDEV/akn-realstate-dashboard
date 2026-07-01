@@ -135,7 +135,8 @@ Authorization: Bearer <jwt>
   "data": {
     "websiteName": { "ar": "أكن", "en": "AKN" },
     "defaultLanguage": "ar",
-    "logoUrl": "https://..."
+    "logoUrl": "https://...",
+    "mapLink": "https://maps.google.com/?q=Cairo"
   }
 }
 ```
@@ -147,6 +148,7 @@ Content-Type: multipart/form-data
 
 websiteName={"ar":"أكن","en":"AKN"}
 defaultLanguage=ar
+mapLink=https://maps.google.com/?q=Cairo
 logo=@logo.webp;type=image/webp
 ```
 

@@ -30,6 +30,7 @@ export function toSiteSettings(api: WebsiteSettingsApi): SiteSettings {
     id: api.id ?? "website-settings",
     siteName: api.websiteName,
     logoUrl: resolveLogoUrl(api),
+    mapLink: api.mapLink ?? null,
     defaultLocale: parseDefaultLanguage(api.defaultLanguage),
     createdAt: api.createdAt ?? now,
     updatedAt: api.updatedAt ?? now,
@@ -47,6 +48,7 @@ export function toFormData(values: SiteSettingsFormValues): FormData {
     }),
   );
   formData.append("defaultLanguage", values.defaultLocale);
+  formData.append("mapLink", values.mapLink ?? "");
 
   if (values.logoFile instanceof File) {
     formData.append("logo", values.logoFile, values.logoFile.name);

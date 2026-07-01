@@ -42,6 +42,7 @@ export type SiteSettings = {
   id: string;
   siteName: LocalizedString;
   logoUrl: string | null;
+  mapLink: string | null;
   defaultLocale: DefaultLanguage;
   createdAt: string;
   updatedAt: string;
@@ -53,6 +54,7 @@ export type WebsiteSettingsApi = {
   defaultLanguage: DefaultLanguage;
   logoUrl?: string | null;
   logo?: string | null;
+  mapLink?: string | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -60,6 +62,7 @@ export type WebsiteSettingsApi = {
 export type SiteSettingsFormValues = {
   siteName: LocalizedString;
   logoUrl: string | null;
+  mapLink: string | null;
   defaultLocale: DefaultLanguage;
   logoFile?: File | null;
 };
