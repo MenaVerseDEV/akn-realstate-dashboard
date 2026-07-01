@@ -128,7 +128,7 @@ export function ProjectForm({ item, onClose }: ProjectFormProps) {
             <Button variant="outline" className="w-full" asChild>
               <Link href={`/admin/projects/${editItem.id}`}>
                 <Icon icon="solar:gallery-bold" width={16} />
-                إدارة معرض الوسائط
+                إدارة المشروع
               </Link>
             </Button>
           ) : null}

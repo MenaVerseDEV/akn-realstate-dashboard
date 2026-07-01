@@ -16,6 +16,9 @@ import * as projectsApi from "@/lib/api/projects";
 import { baseApi, tags, useAppDispatch } from "@/lib/store";
 import type { ProjectMedia } from "@/lib/types";
 import { ProjectMediaForm } from "../ProjectMediaForm";
+import { ProjectUnitsSection } from "../ProjectUnitsSection";
+
+type ProjectTab = "media" | "units";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
@@ -23,6 +26,7 @@ export default function ProjectDetailPage() {
   const { data: project, isLoading: isProjectLoading } = useProject(id);
   const { data: media = [], isLoading: isMediaLoading } = useProjectMedia(id);
   const dispatch = useAppDispatch();
+  const [activeTab, setActiveTab] = useState<ProjectTab>("media");
   const [deleting, setDeleting] = useState<ProjectMedia | null>(null);
   const [editing, setEditing] = useState<ProjectMedia | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -62,60 +66,93 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="border border-border bg-bg-card p-6">
-        <h3 className="mb-4 text-lg font-bold">معرض الوسائط</h3>
-        <div className="mb-4">
-          <MediaDropzone
-            accept="image/*"
-            isUploading={isUploading}
-            onFileSelect={handleAddMedia}
-            onInvalidFile={() => toast.error("يرجى اختيار ملف صورة صالح")}
-          />
+      <div className="space-y-6 border border-border bg-bg-card p-6">
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-lg font-bold text-dark">
+            {activeTab === "media" ? "معرض الوسائط" : "وحدات المشروع"}
+          </h3>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant={activeTab === "media" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTab("media")}
+            >
+              الوسائط
+            </Button>
+            <Button
+              type="button"
+              variant={activeTab === "units" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTab("units")}
+            >
+              الوحدات
+            </Button>
+          </div>
         </div>
 
-        {isMediaLoading ? (
-          <PageLoadingSkeleton />
-        ) : media.length === 0 ? (
-          <p className="text-muted-foreground">لا توجد وسائط بعد</p>
-        ) : (
-          <ReorderableList
-            items={media}
-            onReorder={async (reordered) => {
-              try {
-                await projectsApi.reorderMedia(id, reordered.map((m) => m.id));
-                invalidateMedia();
-                toast.success("تم تحديث الترتيب");
-              } catch {
-                toast.error("فشل تحديث الترتيب");
-              }
-            }}
-            renderItem={(item) => (
-              <div className="flex flex-1 items-center gap-4">
-                <div className="relative size-16 overflow-hidden border border-border">
-                  <Image src={item.url} alt="" fill className="object-cover" unoptimized />
-                </div>
-                <span className="text-sm text-muted-foreground">ترتيب: {item.order}</span>
-                <div className="ms-auto flex gap-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => setEditing(item)}
-                  >
-                    <Icon icon="solar:pen-bold" width={16} />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-xs"
-                    onClick={() => setDeleting(item)}
-                  >
-                    <Icon icon="solar:trash-bin-trash-bold" width={16} className="text-destructive" />
-                  </Button>
-                </div>
-              </div>
+        {activeTab === "media" ? (
+          <>
+            <div>
+              <MediaDropzone
+                accept="image/*"
+                isUploading={isUploading}
+                onFileSelect={handleAddMedia}
+                onInvalidFile={() => toast.error("يرجى اختيار ملف صورة صالح")}
+              />
+            </div>
+
+            {isMediaLoading ? (
+              <PageLoadingSkeleton />
+            ) : media.length === 0 ? (
+              <p className="text-muted-foreground">لا توجد وسائط بعد</p>
+            ) : (
+              <ReorderableList
+                items={media}
+                onReorder={async (reordered) => {
+                  try {
+                    await projectsApi.reorderMedia(id, reordered.map((m) => m.id));
+                    invalidateMedia();
+                    toast.success("تم تحديث الترتيب");
+                  } catch {
+                    toast.error("فشل تحديث الترتيب");
+                  }
+                }}
+                renderItem={(item) => (
+                  <div className="flex flex-1 items-center gap-4">
+                    <div className="relative size-16 overflow-hidden border border-border">
+                      <Image src={item.url} alt="" fill className="object-cover" unoptimized />
+                    </div>
+                    <span className="text-sm text-muted-foreground">ترتيب: {item.order}</span>
+                    <div className="ms-auto flex gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => setEditing(item)}
+                      >
+                        <Icon icon="solar:pen-bold" width={16} />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-xs"
+                        onClick={() => setDeleting(item)}
+                      >
+                        <Icon
+                          icon="solar:trash-bin-trash-bold"
+                          width={16}
+                          className="text-destructive"
+                        />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              />
             )}
-          />
+          </>
+        ) : (
+          <ProjectUnitsSection project={project} embedded />
         )}
       </div>
 

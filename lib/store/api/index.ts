@@ -41,6 +41,7 @@ export {
   useGetProjectsQuery,
   useGetProjectQuery,
   useGetProjectMediaQuery,
+  useGetProjectUnitsQuery,
   useGetMilestonesQuery,
   useGetMilestoneByIdQuery,
   useGetVideoQuery,

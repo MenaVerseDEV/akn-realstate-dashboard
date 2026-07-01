@@ -6,6 +6,7 @@ import * as partnersApi from "@/lib/api/partners";
 import * as contactApi from "@/lib/api/contact";
 import * as videoApi from "@/lib/api/video";
 import * as projectsApi from "@/lib/api/projects";
+import * as projectUnitsApi from "@/lib/api/project-units";
 import * as heroApi from "@/lib/api/hero";
 import type {
   About,
@@ -19,6 +20,8 @@ import type {
   Partner,
   Project,
   ProjectMedia,
+  ProjectUnitsListParams,
+  ProjectUnitsListResult,
   ProjectsListParams,
   ProjectsListResult,
   Value,
@@ -57,6 +60,14 @@ export const cmsEndpoints = baseApi.injectEndpoints({
     getProjectMedia: builder.query<ProjectMedia[], string>({
       queryFn: (projectId) => wrapQueryFn(projectsApi.listMedia(projectId)),
       providesTags: (_result, _error, projectId) => [{ type: "Project", id: projectId }],
+    }),
+    getProjectUnits: builder.query<
+      ProjectUnitsListResult,
+      { projectId: string; params?: ProjectUnitsListParams }
+    >({
+      queryFn: ({ projectId, params }) =>
+        wrapQueryFn(projectUnitsApi.list(projectId, params)),
+      providesTags: (_result, _error, { projectId }) => [{ type: "Project", id: projectId }],
     }),
     getMilestones: builder.query<Milestone[], void>({
       queryFn: () => wrapQueryFn(aspirationsApi.list()),
@@ -117,6 +128,7 @@ export const {
   useGetProjectsQuery,
   useGetProjectQuery,
   useGetProjectMediaQuery,
+  useGetProjectUnitsQuery,
   useGetMilestonesQuery,
   useGetMilestoneByIdQuery,
   useGetVideoQuery,

@@ -72,6 +72,17 @@ export const projectSchema = z.object({
   published: z.boolean(),
 });
 
+export const projectUnitSchema = z.object({
+  unitNumber: z.string().min(1),
+  unitType: z.enum(["apartment", "villa", "townhouse", "office", "retail", "other"]),
+  bedrooms: z.coerce.number().min(0),
+  bathrooms: z.coerce.number().min(0),
+  area: z.coerce.number().min(0),
+  floor: z.string().min(1),
+  status: z.enum(["available", "reserved", "sold"]),
+  description: localizedStringSchema,
+});
+
 export const milestoneSchema = z.object({
   year: z.string().min(1),
   title: localizedStringSchema,

@@ -95,6 +95,7 @@ export function toProject(
     status: api.status,
     published: api.isPublished,
     media: (api.media ?? []).map(normalizeProjectMedia),
+    unitsSummary: api.unitsSummary,
     createdAt: api.createdAt,
     updatedAt: api.updatedAt,
   };

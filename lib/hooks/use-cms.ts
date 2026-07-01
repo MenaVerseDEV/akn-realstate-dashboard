@@ -1,6 +1,6 @@
 "use client";
 
-import type { ContactInquiriesListParams, ProjectsListParams } from "@/lib/types";
+import type { ContactInquiriesListParams, ProjectUnitsListParams, ProjectsListParams } from "@/lib/types";
 import {
   useGetAboutQuery,
   useGetContactInquiriesQuery,
@@ -14,6 +14,7 @@ import {
   useGetPartnersQuery,
   useGetProjectQuery,
   useGetProjectMediaQuery,
+  useGetProjectUnitsQuery,
   useGetProjectsQuery,
   useGetSettingsQuery,
   useGetValuesQuery,
@@ -74,6 +75,16 @@ export function useProject(id: string) {
 
 export function useProjectMedia(projectId: string) {
   return useGetProjectMediaQuery(projectId, { skip: !projectId });
+}
+
+export function useProjectUnits(
+  projectId: string,
+  params?: ProjectUnitsListParams,
+) {
+  return useGetProjectUnitsQuery(
+    { projectId, params: params ?? { page: 1, limit: 10 } },
+    { skip: !projectId },
+  );
 }
 
 export function useMilestones() {

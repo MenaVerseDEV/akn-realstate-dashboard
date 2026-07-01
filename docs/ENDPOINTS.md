@@ -523,6 +523,17 @@ RTK: `useProjects(params)` / `useProject(id)` → tags `Projects` / `Project`. C
 
 Field mapping: `imageUrl` / `imagePath` → `ProjectMedia.url`; images only (`type: "image"`). RTK: `useProjectMedia(projectId)` → tag `Project`.
 
+**Project units** (`/projects/:id/units`):
+
+| Method | Path | Body |
+|--------|------|------|
+| GET | `/projects/:id/units?page&limit` | — |
+| POST | `/projects/:id/units` | JSON: `unitNumber`, `unitType`, `bedrooms`, `bathrooms`, `area`, `floor`, `status`, `description: { ar, en? }` |
+| PATCH | `/projects/:id/units/:unitId` | same shape as create |
+| DELETE | `/projects/:id/units/:unitId` | — |
+
+List response includes `unitsSummary` on each project (`total`, `byStatus`, `byType`). Unit enums: `unitType` (`apartment` | `villa` | `townhouse` | `office` | `retail` | `other`), `status` (`available` | `reserved` | `sold`). RTK: `useProjectUnits(projectId, params)` → tag `Project`. Client: [`lib/api/project-units.ts`](lib/api/project-units.ts). Admin UI: `/admin/projects/[id]` (units tab).
+
 ### Singleton sub-collections
 
 | Path | Methods |

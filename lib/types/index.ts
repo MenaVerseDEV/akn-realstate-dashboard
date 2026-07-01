@@ -232,6 +232,100 @@ export type ProjectMediaPatchInput = {
   order?: number;
 };
 
+export type UnitsSummary = {
+  total: number;
+  byStatus: {
+    available: number;
+    reserved: number;
+    sold: number;
+  };
+  byType: {
+    apartment: number;
+    villa: number;
+    townhouse: number;
+    office: number;
+    retail: number;
+    other: number;
+  };
+};
+
+export type ProjectUnitType =
+  | "apartment"
+  | "villa"
+  | "townhouse"
+  | "office"
+  | "retail"
+  | "other";
+
+export type ProjectUnitStatus = "available" | "reserved" | "sold";
+
+export type ProjectUnit = {
+  id: string;
+  projectId: string;
+  unitNumber: string;
+  unitType: ProjectUnitType;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  floor: string;
+  status: ProjectUnitStatus;
+  description: LocalizedString;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProjectUnitApi = {
+  id: string;
+  projectId: string;
+  unitNumber: string;
+  unitType: ProjectUnitType;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  floor: string;
+  status: ProjectUnitStatus;
+  description: LocalizedString | string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProjectUnitFormValues = {
+  unitNumber: string;
+  unitType: ProjectUnitType;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  floor: string;
+  status: ProjectUnitStatus;
+  description: LocalizedString;
+};
+
+export type ProjectUnitInput = {
+  unitNumber: string;
+  unitType: ProjectUnitType;
+  bedrooms: number;
+  bathrooms: number;
+  area: number;
+  floor: string;
+  status: ProjectUnitStatus;
+  description: LocalizedString;
+};
+
+export type ProjectUnitsListParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type ProjectUnitsListResult = {
+  items: ProjectUnit[];
+  meta: ProjectsListMeta;
+};
+
+export type ProjectUnitsListApiResponse = {
+  items: ProjectUnitApi[];
+  meta: ProjectsListMeta;
+};
+
 export type Project = {
   id: string;
   slug: string;
@@ -240,6 +334,7 @@ export type Project = {
   status: ProjectStatus;
   published: boolean;
   media: ProjectMedia[];
+  unitsSummary?: UnitsSummary;
   createdAt: string;
   updatedAt: string;
 };
@@ -252,6 +347,7 @@ export type ProjectApi = {
   status: ProjectStatus;
   isPublished: boolean;
   media: ProjectMediaApi[] | ProjectMedia[];
+  unitsSummary?: UnitsSummary;
   createdAt: string;
   updatedAt: string;
 };

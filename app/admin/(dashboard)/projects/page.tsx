@@ -171,6 +171,21 @@ export default function ProjectsPage() {
             render: (i) => i.media.length,
           },
           {
+            key: "units",
+            header: "الوحدات",
+            render: (i) => (
+              <div>
+                <span>{i.unitsSummary?.total ?? 0}</span>
+                {i.unitsSummary ? (
+                  <p className="text-xs text-muted-foreground">
+                    متاح: {i.unitsSummary.byStatus.available} / محجوز:{" "}
+                    {i.unitsSummary.byStatus.reserved} / مباع: {i.unitsSummary.byStatus.sold}
+                  </p>
+                ) : null}
+              </div>
+            ),
+          },
+          {
             key: "detail",
             header: "التفاصيل",
             render: (i) => (

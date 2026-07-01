@@ -8,6 +8,7 @@ export * as heroApi from "@/lib/api/hero";
 export * as aboutApi from "@/lib/api/about";
 export * as aspirationsApi from "@/lib/api/aspirations";
 export * as projectsApi from "@/lib/api/projects";
+export * as projectUnitsApi from "@/lib/api/project-units";
 export * as valuesApi from "@/lib/api/values";
 export * as featuresApi from "@/lib/api/features";
 export * as partnersApi from "@/lib/api/partners";

@@ -75,34 +75,36 @@ export function CollectionEditor<T extends { id: string }>({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-dark">{title}</h2>
-        </div>
-        {reorderable && items.length > 1 && (
-          <div className="flex gap-2">
-            <Button
-              type="button"
-              variant={view === "table" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setView("table")}
-            >
-              جدول
-            </Button>
-            <Button
-              type="button"
-              variant={view === "reorder" ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setLocalItems(items);
-                setView("reorder");
-              }}
-            >
-              ترتيب
-            </Button>
+      {title || (reorderable && items.length > 1) ? (
+        <div className="flex items-center justify-between">
+          <div>
+            {title ? <h2 className="text-2xl font-bold text-dark">{title}</h2> : null}
           </div>
-        )}
-      </div>
+          {reorderable && items.length > 1 && (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={view === "table" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setView("table")}
+              >
+                جدول
+              </Button>
+              <Button
+                type="button"
+                variant={view === "reorder" ? "default" : "outline"}
+                size="sm"
+                onClick={() => {
+                  setLocalItems(items);
+                  setView("reorder");
+                }}
+              >
+                ترتيب
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : null}
 
       {view === "reorder" && onReorder ? (
         <ReorderableList
