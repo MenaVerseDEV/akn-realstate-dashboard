@@ -6,8 +6,11 @@ import { Switch } from "@/components/ui/switch";
 import { CollectionForm } from "@/components/cms/CollectionForm";
 import { LocalizedInput } from "@/components/cms/LocalizedInput";
 import { FormLoadingSkeleton } from "@/components/cms/LoadingSkeleton";
-import * as navApi from "@/lib/api/nav";
-import { useGetNavByIdQuery } from "@/lib/store/api";
+import {
+  useCreateNavMutation,
+  useGetNavByIdQuery,
+  useUpdateNavMutation,
+} from "@/lib/store/api";
 import { tags } from "@/lib/store";
 import { navLinkSchema } from "@/lib/schemas";
 import { ltrInputClass } from "@/lib/i18n";
@@ -31,6 +34,8 @@ export function NavForm({ item, onClose }: NavFormProps) {
   const { data: hydratedItem, isLoading } = useGetNavByIdQuery(item?.id ?? "", {
     skip: !item?.id,
   });
+  const [createNav] = useCreateNavMutation();
+  const [updateNav] = useUpdateNavMutation();
 
   if (item && isLoading) {
     return <FormLoadingSkeleton />;
@@ -50,8 +55,8 @@ export function NavForm({ item, onClose }: NavFormProps) {
       invalidateTags={tags.nav}
       onClose={onClose}
       onSubmit={async (values) => {
-        if (editItem) await navApi.update(editItem.id, values);
-        else await navApi.create(values);
+        if (editItem) await updateNav({ id: editItem.id, body: values }).unwrap();
+        else await createNav(values).unwrap();
       }}
     >
       {(form) => (

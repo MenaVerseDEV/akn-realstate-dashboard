@@ -152,7 +152,7 @@ mapLink=https://maps.google.com/?q=Cairo
 logo=@logo.webp;type=image/webp
 ```
 
-The dashboard proxies these via `GET/PUT /api/website-settings` (Next.js BFF).
+Called **directly from the browser** via `authFetch` + RTK Query (`lib/api/settings.ts`) — no Next.js BFF routes.
 
 ### Navigation bar pages (real API)
 
@@ -169,9 +169,7 @@ Production path: `/api/v1/nav-bar-pages` (Bearer required).
 
 Field mapping in dashboard: `title→label`, `link→href`, `isActive→visible`.
 
-The BFF merges bilingual titles on list by fetching with `Accept-Language: ar` and `en`.
-
-Dashboard proxy routes: `/api/nav-bar-pages`, `/api/nav-bar-pages/[id]`, `/api/nav-bar-pages/reorder`.
+List/detail merge bilingual titles by fetching with `Accept-Language: ar` and `en` in `lib/api/nav.ts`. Called **directly from the browser** via `authFetch` + RTK Query — no Next.js BFF routes.
 
 ### Footer info (real API)
 
@@ -208,7 +206,7 @@ email=info@example.com
 
 Field mapping: `websiteName→companyName`, `websiteDescription→description`, `logo→logoFile`.
 
-Dashboard proxy: `GET/PUT /api/footer/info`.
+Called **directly from the browser** via `authFetch` + RTK Query (`lib/api/footer.ts`) — no Next.js BFF routes.
 
 ### Footer services (real API, client + RTK)
 

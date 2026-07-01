@@ -16,7 +16,14 @@ export {
   useGetSettingsQuery,
   useUpdateSettingsMutation,
 } from "./settingsApi";
-export { useListNavQuery, useGetNavByIdQuery } from "./navApi";
+export {
+  useListNavQuery,
+  useGetNavByIdQuery,
+  useCreateNavMutation,
+  useUpdateNavMutation,
+  useDeleteNavMutation,
+  useReorderNavMutation,
+} from "./navApi";
 export {
   useGetFooterInfoQuery,
   useUpdateFooterInfoMutation,

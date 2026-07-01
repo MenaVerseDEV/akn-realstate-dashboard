@@ -1,33 +1,25 @@
-import { toFormData } from "@/lib/api/mappers/website-settings";
-import type { SiteSettings, SiteSettingsFormValues } from "@/lib/types";
+import { authFetch } from "@/lib/api/fetch-auth";
+import { toFormData, toSiteSettings } from "@/lib/api/mappers/website-settings";
+import { apiUrl, parseApiResponse } from "@/lib/api/parse-response";
+import type { SiteSettings, SiteSettingsFormValues, WebsiteSettingsApi } from "@/lib/types";
 
-async function parseJsonResponse<T>(response: Response): Promise<T> {
-  const body = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const message = (body as { message?: string } | null)?.message ?? "فشل الطلب";
-    throw new Error(message);
-  }
-
-  return body as T;
+async function authorizedFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const headers = new Headers(init.headers);
+  headers.set("accept", "application/json");
+  return authFetch(apiUrl(path), { ...init, headers, cache: "no-store" });
 }
 
 export async function getSettings(): Promise<SiteSettings> {
-  const response = await fetch("/api/website-settings", {
-    method: "GET",
-    cache: "no-store",
-  });
-
-  const data = await parseJsonResponse<{ settings: SiteSettings }>(response);
-  return data.settings;
+  const response = await authorizedFetch("/website-settings", { method: "GET" });
+  const data = await parseApiResponse<WebsiteSettingsApi>(response);
+  return toSiteSettings(data);
 }
 
 export async function updateSettings(values: SiteSettingsFormValues): Promise<SiteSettings> {
-  const response = await fetch("/api/website-settings", {
+  const response = await authorizedFetch("/website-settings", {
     method: "PUT",
     body: toFormData(values),
   });
-
-  const data = await parseJsonResponse<{ settings: SiteSettings }>(response);
-  return data.settings;
+  const data = await parseApiResponse<WebsiteSettingsApi>(response);
+  return toSiteSettings(data);
 }
